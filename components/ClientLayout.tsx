@@ -31,7 +31,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return () => subscription.unsubscribe();
   }, [pathname, router]);
 
-  if (!init) return <div className="bg-[#0F1923] h-full w-full flex-1"></div>;
+  if (!init) return <div className="h-full w-full flex-1"></div>;
 
   return (
     <ThemeProvider>

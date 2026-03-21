@@ -38,8 +38,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 100, opacity: 0 }}
-              className={`p-4 rounded-md shadow-lg text-white pointer-events-auto min-w-[250px]
-                ${t.type === 'error' ? 'bg-red-500' : t.type === 'success' ? 'bg-green-500' : 'bg-blue-500'}
+              className={`p-4 rounded-[12px] border shadow-[0_10px_30px_rgba(16,34,58,0.22)] text-white pointer-events-auto min-w-[250px] backdrop-blur-md
+                ${t.type === 'error' ? 'bg-[#c0352b]/95 border-[#dd7d74]' : t.type === 'success' ? 'bg-[#1e8a5a]/95 border-[#6ebf99]' : 'bg-[#0f6cbd]/95 border-[#76addc]'}
               `}
             >
               <div className="text-sm font-medium">{t.msg}</div>

@@ -30,32 +30,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#059669] via-[#10b981] to-[#34d399]">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(15,108,189,0.2),transparent_40%),radial-gradient(circle_at_85%_0%,rgba(30,138,90,0.14),transparent_35%)]" />
+      <div className="absolute inset-0 opacity-40 bg-[linear-gradient(110deg,transparent_0%,rgba(255,255,255,0.08)_45%,transparent_100%)]" />
 
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={shake ? { x: [-10, 10, -10, 10, 0] } : { scale: 1, opacity: 1, y: 0, x: 0 }}
         transition={{ duration: shake ? 0.4 : 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl"
+        className="relative z-10 w-full max-w-md p-8 app-panel"
       >
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#059669] to-[#047857] flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f84d0)] flex items-center justify-center shadow-md">
               <LayoutGrid size={28} className="text-white" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-[#172b4d] mb-1">CopyFlow</h1>
-          <p className="text-[#44546f] text-sm">Sign in to your workspace</p>
+          <h1 className="text-2xl font-bold text-[var(--text)] mb-1">CopyFlow</h1>
+          <p className="text-[var(--text-muted)] text-sm">Sign in to your team workspace</p>
         </div>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           <div>
-            <label className="block text-xs font-semibold text-[#44546f] mb-2">Email address</label>
+            <label className="block text-xs font-semibold text-[var(--text-muted)] mb-2">Email address</label>
             <input
               type="email"
               required
-              className="w-full bg-[#f5f6f8] border-2 border-[#dfe1e6] rounded-lg px-4 py-3 text-[#172b4d] focus:outline-none focus:border-[#059669] focus:bg-white transition-all"
+              className="input-base"
               placeholder="Enter your email"
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -63,11 +64,11 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#44546f] mb-2">Password</label>
+            <label className="block text-xs font-semibold text-[var(--text-muted)] mb-2">Password</label>
             <input
               type="password"
               required
-              className="w-full bg-[#f5f6f8] border-2 border-[#dfe1e6] rounded-lg px-4 py-3 text-[#172b4d] focus:outline-none focus:border-[#059669] focus:bg-white transition-all"
+              className="input-base"
               placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -79,14 +80,14 @@ export default function LoginPage() {
             whileTap={{ scale: 0.98 }}
             disabled={loading}
             type="submit"
-            className="w-full mt-3 bg-[#059669] hover:bg-[#047857] text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center disabled:opacity-50"
+            className="btn btn-primary w-full mt-3 py-3 flex justify-center items-center"
           >
             {loading ? <Loader2 className="animate-spin text-white" /> : "Sign In"}
           </motion.button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-[#091e4214] text-center">
-          <p className="text-xs text-[#44546f]">
+        <div className="mt-6 pt-6 border-t border-[var(--border)] text-center">
+          <p className="text-xs text-[var(--text-muted)]">
             Demo: admin@copy-flow.app / admin123
           </p>
         </div>

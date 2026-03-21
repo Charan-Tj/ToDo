@@ -115,12 +115,12 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard }: { list: List,
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.15 }}
-      className="w-[272px] shrink-0 rounded-xl flex flex-col max-h-[100%] whitespace-normal shadow-sm transition-colors"
+      className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal shadow-[0_4px_12px_rgba(0,0,0,0.16)] transition-colors"
       style={{ backgroundColor: listColor }}
     >
       <div className="pl-3 pr-2 pt-2 pb-1 flex items-center justify-between group relative">
         <input
-          className="flex-1 font-semibold text-[#172b4d] dark:text-[#B6C2CF] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_2px_#0c66e4] dark:focus:shadow-[inset_0_0_0_2px_#579dff] rounded px-2 py-1 -ml-2 transition-all"
+          className="flex-1 font-semibold text-[#172b4d] dark:text-[#B6C2CF] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
           defaultValue={list.title}
           onBlur={e => handleUpdateTitle(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
@@ -303,11 +303,11 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard }: { list: List,
                 onChange={e => setNewCardTitle(e.target.value)}
                 onKeyDown={e => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddCardSubmit(e); } if (e.key === 'Escape') setIsAddingCard(false); }}
                 placeholder="Enter a title for this card..."
-                className="w-full bg-white dark:bg-[#22272B] text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc] text-sm p-2 rounded-lg outline-none border-0 shadow-[0_0_0_2px_#0c66e4] dark:shadow-[inset_0_0_0_2px_#579dff] resize-none min-h-[72px]"
+                className="input-base text-sm resize-none min-h-[72px]"
               />
               <div className="flex items-center gap-2 mt-2">
-                <button type="submit" className="bg-[#0c66e4] dark:bg-[#579dff] text-white dark:text-[#1d2125] font-medium text-sm px-3 py-1.5 rounded-md hover:bg-[#0055cc] dark:hover:bg-[#85b8ff] transition-colors shadow-sm">Add card</button>
-                <button type="button" onClick={() => setIsAddingCard(false)} className="text-[#44546f] dark:text-[#9fadbc] hover:text-[#172b4d] dark:hover:text-[#B6C2CF] p-1.5 rounded hover:bg-[#091e4224] dark:hover:bg-[#A6C5E2]/[0.16] transition-colors"><X size={20} /></button>
+                <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add card</button>
+                <button type="button" onClick={() => setIsAddingCard(false)} className="btn btn-ghost p-2"><X size={20} /></button>
               </div>
             </form>
           ) : (

@@ -57,19 +57,19 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex-1 bg-white dark:bg-[#1d2125] p-8 overflow-y-auto w-full custom-scrollbar text-[#172b4d] dark:text-[#B6C2CF] transition-colors">
+    <div className="flex-1 p-6 md:p-8 overflow-y-auto w-full custom-scrollbar text-[var(--text)] transition-colors">
       <div className="max-w-6xl mx-auto">
 
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded bg-gradient-to-br from-[#0c66e4] to-[#0055cc] flex items-center justify-center shadow-md">
+          <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f84d0)] flex items-center justify-center shadow-md">
              <span className="text-white font-bold text-xl leading-none">C</span>
           </div>
-          <h1 className="text-xl font-bold text-[#172b4d] dark:text-white tracking-tight">CopyFlow Workspace</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-[var(--text)] tracking-tight">CopyFlow Workspace</h1>
         </div>
 
-        <div className="flex items-center gap-2 mb-3 mt-8">
-           <Clock size={18} className="text-[#44546f] dark:text-[#9fadbc]" />
-           <h2 className="text-base font-semibold text-[#172b4d] dark:text-white tracking-tight">Your boards</h2>
+        <div className="flex items-center gap-2 mb-4 mt-8">
+           <Clock size={18} className="text-[var(--text-muted)]" />
+           <h2 className="text-base font-semibold text-[var(--text)] tracking-tight">Your boards</h2>
         </div>
 
         {loading ? (
@@ -78,7 +78,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 auto-rows-[96px]"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[104px]"
             initial="hidden"
             animate="show"
             variants={{
@@ -93,11 +93,11 @@ export default function DashboardPage() {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => router.push(`/board/${b.id}`)}
-className="relative rounded-lg cursor-pointer overflow-hidden p-2 group shadow-sm hover:shadow-md transition-all"
+className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.2)] transition-all"
                 style={{ backgroundColor: b.bg_color }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/10 to-black/20" />
-                <h3 className="relative z-10 text-white font-semibold text-[15px] pt-1.5 pl-1.5 leading-tight break-words drop-shadow">
+                <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-black/15 to-black/35" />
+                <h3 className="relative z-10 text-white font-semibold text-[15px] pt-1 leading-tight break-words drop-shadow">
                   {b.name}
                 </h3>
                 <button
@@ -114,7 +114,7 @@ className="relative rounded-lg cursor-pointer overflow-hidden p-2 group shadow-s
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setIsModalOpen(true)}
-              className="rounded-lg cursor-pointer bg-[#091e420f] dark:bg-[#22272B] hover:bg-[#091e4224] dark:hover:bg-[#2C333A] flex items-center justify-center text-[#172b4d] dark:text-[#B6C2CF] hover:text-[#172b4d] dark:hover:text-white transition-colors font-medium text-sm"
+              className="rounded-[14px] cursor-pointer app-surface hover:bg-[var(--bg-muted)] flex items-center justify-center text-[var(--text)] transition-colors font-semibold text-sm"
             >
               Create new board
             </motion.div>
@@ -136,21 +136,21 @@ className="relative rounded-lg cursor-pointer overflow-hidden p-2 group shadow-s
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
               onClick={e => e.stopPropagation()}
-              className="bg-white dark:bg-[#282E33] rounded-xl p-6 w-full max-w-[360px] shadow-2xl"
+              className="app-panel p-6 w-full max-w-[360px]"
             >
-              <h2 className="text-sm font-semibold text-[#44546f] dark:text-[#B6C2CF] text-center w-full mb-5">Create board</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-muted)] text-center w-full mb-5">Create board</h2>
               <form onSubmit={handleCreateBoard}>
-                <label className="block text-xs font-semibold text-[#44546f] dark:text-[#b6c2cf] mb-2">Board title <span className="text-red-500">*</span></label>
+                <label className="block text-xs font-semibold text-[var(--text-muted)] mb-2">Board title <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   value={newBoardName}
                   onChange={e => setNewBoardName(e.target.value)}
-                  className="w-full bg-[#f5f6f8] dark:bg-[#22272B] text-[#172b4d] dark:text-white border-2 border-[#0c66e4] dark:border-[#579dff] text-sm rounded-md px-3 py-2 focus:outline-none mb-4"
+                  className="input-base mb-4"
                   required
                   autoFocus
                 />
 
-                <label className="block text-xs font-semibold text-[#44546f] dark:text-[#b6c2cf] mb-2">Background</label>
+                <label className="block text-xs font-semibold text-[var(--text-muted)] mb-2">Background</label>
                 <div className="grid grid-cols-4 gap-2 mb-6">
                   {BOARD_COLORS.map(color => (
                     <button
@@ -170,7 +170,7 @@ className="relative rounded-lg cursor-pointer overflow-hidden p-2 group shadow-s
                 <button
                   type="submit"
                   disabled={creating}
-                  className="w-full py-2.5 rounded-md bg-[#0c66e4] dark:bg-[#579dff] text-white dark:text-[#1d2125] font-medium text-sm hover:bg-[#0055cc] dark:hover:bg-[#85b8ff] transition-colors flex items-center justify-center shadow-sm disabled:opacity-50"
+                  className="btn btn-primary w-full py-2.5 text-sm flex items-center justify-center"
                 >
                   {creating ? <LoadingSpinner size="sm" color="border-white dark:border-[#1d2125]" /> : 'Create'}
                 </button>
