@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutGrid, Table, Calendar, BarChart3, Timeline, MapPin, ChevronDown } from "lucide-react";
+import { LayoutGrid, Table, Calendar, BarChart3, ChartGantt, MapPin, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 export type ViewType = "board" | "table" | "calendar" | "dashboard" | "timeline" | "map";
@@ -11,7 +11,7 @@ const VIEWS = [
   { id: "table", name: "Table", icon: Table, description: "Spreadsheet view of all cards" },
   { id: "calendar", name: "Calendar", icon: Calendar, description: "View cards by due date" },
   { id: "dashboard", name: "Dashboard", icon: BarChart3, description: "Charts and metrics" },
-  { id: "timeline", name: "Timeline", icon: Timeline, description: "Gantt chart view" },
+  { id: "timeline", name: "Timeline", icon: ChartGantt, description: "Gantt chart view" },
   { id: "map", name: "Map", icon: MapPin, description: "Location-based view" },
 ] as const;
 
