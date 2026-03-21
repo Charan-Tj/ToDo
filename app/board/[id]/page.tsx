@@ -103,7 +103,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   const orderedLists = [...data.lists].sort((a, b) => a.position - b.position);
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg" style={{ backgroundColor: data.board.bg_color }}>
+    <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg">
       <div className="absolute inset-0 bg-gradient-to-b from-black/18 via-black/8 to-black/12" />
 
       <div className="h-14 px-4 flex items-center justify-between bg-black/22 backdrop-blur-md shrink-0 relative z-10 w-full border-b border-white/25">
