@@ -63,6 +63,16 @@ export const db = {
     if (error) throw error;
   },
 
+  async updateListColor(id: string, bg_color: string) {
+    const { error } = await supabase.from('lists').update({ bg_color }).eq('id', id);
+    if (error) throw error;
+  },
+
+  async archiveList(id: string) {
+    const { error } = await supabase.from('lists').update({ archived: true }).eq('id', id);
+    if (error) throw error;
+  },
+
   async deleteList(id: string) {
     const { error } = await supabase.from('lists').delete().eq('id', id);
     if (error) throw error;

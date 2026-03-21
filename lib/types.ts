@@ -16,6 +16,8 @@ export type List = {
   board_id: string;
   title: string;
   position: number;
+  bg_color?: string;
+  archived?: boolean;
   created_at: string;
 };
 
