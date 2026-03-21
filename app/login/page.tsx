@@ -30,54 +30,48 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#00315a] via-[#0052CC] to-[#0F1923]">
-      <motion.div 
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_100%)] opacity-50"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      />
-      
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0079bf] via-[#0c66e4] to-[#5243aa]">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30" />
+
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={shake ? { x: [-10, 10, -10, 10, 0] } : { scale: 1, opacity: 1, y: 0, x: 0 }}
         transition={{ duration: shake ? 0.4 : 0.6, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md p-8 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
+        className="relative z-10 w-full max-w-md p-8 bg-white rounded-2xl shadow-2xl"
       >
-        <div className="flex flex-col items-center mb-8 text-white">
-          <div className="bg-gradient-to-br from-blue-400 to-white text-transparent bg-clip-text flex flex-col items-center">
-            <LayoutGrid size={48} className="text-white mb-2" />
-            <h1 className="text-3xl font-bold tracking-tight">CopyFlow Team</h1>
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#0c66e4] to-[#0079bf] flex items-center justify-center shadow-lg">
+              <LayoutGrid size={28} className="text-white" />
+            </div>
           </div>
-          <p className="text-white/70 mt-2 text-sm">Your team&apos;s workspace</p>
+          <h1 className="text-2xl font-bold text-[#172b4d] mb-1">CopyFlow</h1>
+          <p className="text-[#44546f] text-sm">Sign in to your workspace</p>
         </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-5">
-          <div className="relative">
+        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-[#44546f] mb-2">Email address</label>
             <input
               type="email"
               required
-              className="peer w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-blue-400 focus:bg-white/10 transition-all"
-              placeholder="Email"
+              className="w-full bg-[#f5f6f8] border-2 border-[#dfe1e6] rounded-lg px-4 py-3 text-[#172b4d] focus:outline-none focus:border-[#0c66e4] focus:bg-white transition-all"
+              placeholder="Enter your email"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <label className="absolute left-4 -top-2.5 text-xs text-blue-300 bg-[#073666] px-1 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-white/50 peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-300 peer-focus:bg-[#073666] rounded">
-              Email Address
-            </label>
           </div>
 
-          <div className="relative">
+          <div>
+            <label className="block text-xs font-semibold text-[#44546f] mb-2">Password</label>
             <input
               type="password"
               required
-              className="peer w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-transparent focus:outline-none focus:border-blue-400 focus:bg-white/10 transition-all"
-              placeholder="Password"
+              className="w-full bg-[#f5f6f8] border-2 border-[#dfe1e6] rounded-lg px-4 py-3 text-[#172b4d] focus:outline-none focus:border-[#0c66e4] focus:bg-white transition-all"
+              placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-            <label className="absolute left-4 -top-2.5 text-xs text-blue-300 bg-[#073666] px-1 transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:text-white/50 peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-blue-300 peer-focus:bg-[#073666] rounded">
-              Password
-            </label>
           </div>
 
           <motion.button
@@ -85,11 +79,17 @@ export default function LoginPage() {
             whileTap={{ scale: 0.98 }}
             disabled={loading}
             type="submit"
-            className="w-full mt-2 bg-gradient-to-r from-blue-500 to-[#0052CC] text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all flex justify-center items-center h-[52px]"
+            className="w-full mt-3 bg-[#0c66e4] hover:bg-[#0055cc] text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex justify-center items-center disabled:opacity-50"
           >
             {loading ? <Loader2 className="animate-spin text-white" /> : "Sign In"}
           </motion.button>
         </form>
+
+        <div className="mt-6 pt-6 border-t border-[#091e4214] text-center">
+          <p className="text-xs text-[#44546f]">
+            Demo: admin@copy-flow.app / admin123
+          </p>
+        </div>
       </motion.div>
     </div>
   );

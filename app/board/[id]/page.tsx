@@ -78,8 +78,8 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     }
   };
 
-  if (loading) return <div className="flex-1 flex items-center justify-center bg-[#1d2125]"><LoadingSpinner color="border-[#579dff]" size="lg" /></div>;
-  if (error || !data) return <div className="text-red-500 p-8">Error: {error}</div>;
+  if (loading) return <div className="flex-1 flex items-center justify-center bg-white dark:bg-[#1d2125] transition-colors"><LoadingSpinner color="border-[#0c66e4] dark:border-[#579dff]" size="lg" /></div>;
+  if (error || !data) return <div className="text-red-500 p-8 bg-white dark:bg-[#1d2125] transition-colors">Error: {error}</div>;
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative" style={{ backgroundColor: data.board.bg_color }}>
@@ -132,7 +132,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
         </DragDropContext>
 
         {isAddingList ? (
-           <div className="w-[272px] shrink-0 bg-[#ebecf0] rounded-xl p-2.5 shadow-lg transition-all">
+           <div className="w-[272px] shrink-0 bg-[#ebecf0] dark:bg-[#101204] rounded-xl p-2.5 shadow-lg transition-all">
              <form onSubmit={handleAddListSubmit}>
                <input
                  autoFocus
@@ -140,18 +140,18 @@ export default function BoardPage({ params }: { params: { id: string } }) {
                  onChange={e => setNewListTitle(e.target.value)}
                  onKeyDown={e => { if (e.key === 'Escape') setIsAddingList(false); }}
                  placeholder="Enter list title..."
-                 className="w-full bg-white text-[#172b4d] placeholder-[#44546f] border-2 border-[#0c66e4] text-sm rounded-lg px-3 py-2 focus:outline-none mb-2 shadow-sm"
+                 className="w-full bg-white dark:bg-[#22272B] text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc] border-2 border-[#0c66e4] dark:border-[#579dff] text-sm rounded-lg px-3 py-2 focus:outline-none mb-2 shadow-sm"
                />
                <div className="flex items-center gap-2">
-                 <button type="submit" className="bg-[#0c66e4] text-white font-medium text-sm px-3 py-1.5 rounded-md hover:bg-[#0055cc] transition-colors shadow-sm">Add list</button>
-                 <button type="button" onClick={() => setIsAddingList(false)} className="text-[#44546f] hover:text-[#172b4d] p-1.5 rounded hover:bg-[#091e4224] transition-colors"><X size={20} /></button>
+                 <button type="submit" className="bg-[#0c66e4] dark:bg-[#579dff] text-white dark:text-[#1d2125] font-medium text-sm px-3 py-1.5 rounded-md hover:bg-[#0055cc] dark:hover:bg-[#85b8ff] transition-colors shadow-sm">Add list</button>
+                 <button type="button" onClick={() => setIsAddingList(false)} className="text-[#44546f] dark:text-[#9fadbc] hover:text-[#172b4d] dark:hover:text-[#B6C2CF] p-1.5 rounded hover:bg-[#091e4224] dark:hover:bg-[#A6C5E2]/[0.16] transition-colors"><X size={20} /></button>
                </div>
              </form>
            </div>
          ) : (
            <button
              onClick={() => setIsAddingList(true)}
-             className="w-[272px] shrink-0 bg-white/30 hover:bg-white/40 text-white font-semibold text-sm rounded-xl px-3 py-2.5 flex items-center gap-2 transition-all text-left backdrop-blur-sm shadow-sm hover:shadow-md"
+             className="w-[272px] shrink-0 bg-white/30 dark:bg-[#ffffff3d] hover:bg-white/40 dark:hover:bg-[#ffffff52] text-white font-semibold text-sm rounded-xl px-3 py-2.5 flex items-center gap-2 transition-all text-left backdrop-blur-sm shadow-sm hover:shadow-md"
            >
              <Plus size={18} />
              Add another list

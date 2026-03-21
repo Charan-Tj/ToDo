@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Navbar } from './Navbar';
 import { ToastProvider } from './Toast';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,9 +34,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   if (!init) return <div className="bg-[#0F1923] h-full w-full flex-1"></div>;
 
   return (
-    <ToastProvider>
-      {showNavbar && <Navbar />}
-      <main className="flex-1 overflow-hidden flex flex-col w-full h-full relative z-0">{children}</main>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        {showNavbar && <Navbar />}
+        <main className="flex-1 overflow-hidden flex flex-col w-full h-full relative z-0">{children}</main>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }

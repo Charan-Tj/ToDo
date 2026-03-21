@@ -23,11 +23,11 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={onClick}
-          className={`group bg-white hover:bg-[#f5f5f5] rounded-lg p-2 mb-2 cursor-pointer
-            shadow-[0px_1px_0px_#091e4240]
-            hover:shadow-[0px_1px_2px_#091e4240]
+          className={`group bg-white dark:bg-[#22272B] hover:bg-[#f5f5f5] dark:hover:bg-[#2C333A] rounded-lg p-2 mb-2 cursor-pointer
+            shadow-[0px_1px_0px_#091e4240] dark:shadow-[0px_1px_1px_#091E4240]
+            hover:shadow-[0px_1px_2px_#091e4240] dark:hover:shadow-[0px_1px_3px_#091E4240]
             transition-all duration-75
-            ${snapshot.isDragging ? 'rotate-2 shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25)] ring-2 ring-[#0c66e4] z-50' : ''}
+            ${snapshot.isDragging ? 'rotate-2 shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25)] ring-2 ring-[#0c66e4] dark:ring-[#579dff] z-50' : ''}
           `}
           style={provided.draggableProps.style}
         >
@@ -43,18 +43,18 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
             </div>
           )}
 
-          <div className="text-[14px] text-[#172b4d] font-normal leading-5 break-words mb-1.5">
+          <div className="text-[14px] text-[#172b4d] dark:text-[#B6C2CF] font-normal leading-5 break-words mb-1.5">
             {title}
           </div>
 
           {(due_date || checklistTotal > 0 || assignee) && (
-            <div className="flex items-center gap-2 flex-wrap text-[12px] text-[#44546f] mt-1">
+            <div className="flex items-center gap-2 flex-wrap text-[12px] text-[#44546f] dark:text-[#9fadbc] mt-1">
               {due_date && (
                 <DueDateBadge date={due_date} />
               )}
 
               {checklistTotal > 0 && (
-                <div className={`flex items-center gap-1 px-1 py-0.5 rounded-sm ${checklistDone === checklistTotal ? 'bg-[#1f845a] text-white' : 'hover:bg-[#091e4214]'}`}>
+                <div className={`flex items-center gap-1 px-1 py-0.5 rounded-sm ${checklistDone === checklistTotal ? 'bg-[#1f845a] text-white' : 'hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/[0.16]'}`}>
                   <CheckSquare size={12} />
                   <span className="text-xs font-medium">{checklistDone}/{checklistTotal}</span>
                 </div>
@@ -78,8 +78,8 @@ function DueDateBadge({ date }: { date: string }) {
   const due = new Date(date); due.setHours(0,0,0,0);
   const diff = Math.round((due.getTime() - today.getTime())/(1000*60*60*24));
 
-  let bgClass = 'hover:bg-[#091e4214]';
-  let textClass = 'text-[#44546f]';
+  let bgClass = 'hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/[0.16]';
+  let textClass = 'text-[#44546f] dark:text-[#9fadbc]';
   if (diff < 0) {
     bgClass = 'bg-[#f87168]';
     textClass = 'text-white font-medium';

@@ -18,6 +18,13 @@
     background-color: rgba(0,0,0,0.3);
   }
 
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.3);
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255,255,255,0.4);
+  }
+
   @media (max-width: 768px) {
     .custom-scrollbar::-webkit-scrollbar {
       display: none;
