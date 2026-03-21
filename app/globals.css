@@ -4,17 +4,17 @@
 
 @layer base {
   :root {
-    --bg: #f3f6fa;
+    --bg: #f4f6f7;
     --bg-elevated: #ffffff;
-    --bg-muted: #e9eef5;
-    --text: #10223a;
-    --text-muted: #4b607a;
-    --border: #d5dfeb;
-    --primary: #0f6cbd;
-    --primary-hover: #0b5fa8;
-    --success: #1e8a5a;
+    --bg-muted: #e8eded;
+    --text: #1a2730;
+    --text-muted: #586b77;
+    --border: #d0d9dd;
+    --primary: #1f6f66;
+    --primary-hover: #195b54;
+    --success: #2f7f58;
     --danger: #c0352b;
-    --ring: rgba(15, 108, 189, 0.28);
+    --ring: rgba(31, 111, 102, 0.26);
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 18px;
@@ -23,17 +23,17 @@
   }
 
   .dark {
-    --bg: #101922;
-    --bg-elevated: #182431;
-    --bg-muted: #1f2e3f;
-    --text: #dce7f3;
-    --text-muted: #9fb1c6;
-    --border: #2d4156;
-    --primary: #5aa8ff;
-    --primary-hover: #80bcff;
-    --success: #3ab37a;
-    --danger: #f07066;
-    --ring: rgba(90, 168, 255, 0.32);
+    --bg: #121a1f;
+    --bg-elevated: #1b252c;
+    --bg-muted: #223038;
+    --text: #dce6ea;
+    --text-muted: #9cb0ba;
+    --border: #30414b;
+    --primary: #4f958b;
+    --primary-hover: #6eaca4;
+    --success: #46a676;
+    --danger: #e97b72;
+    --ring: rgba(79, 149, 139, 0.3);
     --shadow-sm: 0 2px 8px rgba(2, 9, 16, 0.4);
     --shadow-md: 0 12px 34px rgba(2, 9, 16, 0.55);
   }
@@ -52,8 +52,8 @@
     padding: 0;
     overflow: hidden;
     background:
-      radial-gradient(circle at 0% 0%, rgba(15, 108, 189, 0.12), transparent 36%),
-      radial-gradient(circle at 100% 0%, rgba(30, 138, 90, 0.08), transparent 32%),
+      radial-gradient(circle at 0% 0%, rgba(31, 111, 102, 0.14), transparent 36%),
+      radial-gradient(circle at 100% 0%, rgba(98, 114, 126, 0.08), transparent 32%),
       var(--bg);
     color: var(--text);
   }

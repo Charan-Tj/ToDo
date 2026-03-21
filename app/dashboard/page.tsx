@@ -11,7 +11,7 @@ import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
 import { Board } from "@/lib/types";
 
-const BOARD_COLORS = ['#0079BF', '#D29034', '#519839', '#B04632', '#89609E', '#CD5A91', '#4BBF6B', '#00AECC'];
+const BOARD_COLORS = ['#3D5A53', '#6B5B4D', '#5D4E60', '#4B5D4A', '#7A5A3A', '#6B4F4F', '#4A5568', '#2F6A62'];
 const DASHBOARD_ORDER_KEY = "copyflow:dashboard-board-order";
 
 function sortBoardsBySavedOrder(items: Board[], savedOrder: string[]) {
@@ -102,7 +102,7 @@ export default function DashboardPage() {
       <div className="relative max-w-6xl mx-auto p-6 md:p-8">
 
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f84d0)] flex items-center justify-center shadow-md">
+          <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f7f76)] flex items-center justify-center shadow-md">
              <span className="text-white font-bold text-xl leading-none">C</span>
           </div>
           <h1 className="text-xl md:text-2xl font-bold text-[var(--text)] tracking-tight">CopyFlow Workspace</h1>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
 
         {loading ? (
           <div className="flex-1 flex items-center justify-center p-20">
-            <LoadingSpinner color="border-[#0c66e4] dark:border-[#579dff]" size="lg" />
+            <LoadingSpinner color="border-[var(--primary)]" size="lg" />
           </div>
         ) : (
           <Reorder.Group

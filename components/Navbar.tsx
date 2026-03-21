@@ -63,7 +63,7 @@ export function Navbar() {
           <LogOut size={16} className="text-[var(--text-muted)] group-hover:text-[var(--danger)] transition-colors" />
           <span className="text-[var(--text-muted)] group-hover:text-[var(--danger)] hidden md:inline font-medium">Sign Out</span>
         </button>
-        <div className="w-9 h-9 rounded-full bg-[linear-gradient(140deg,var(--primary),#348cd8)] shadow-sm flex items-center justify-center font-semibold text-[12px] text-white cursor-pointer">
+        <div className="w-9 h-9 rounded-full bg-[linear-gradient(140deg,var(--primary),#2a8076)] shadow-sm flex items-center justify-center font-semibold text-[12px] text-white cursor-pointer">
           {initial}
         </div>
       </div>

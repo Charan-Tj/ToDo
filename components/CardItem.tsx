@@ -6,7 +6,7 @@ import { Clock, CheckSquare } from "lucide-react";
 
 const LABEL_COLORS: Record<string, string> = {
   red: '#eb5a46', orange: '#ff9f1a', yellow: '#f2d600',
-  green: '#61bd4f', blue: '#0079bf', purple: '#c377e0'
+  green: '#61bd4f', blue: '#3f7a73', purple: '#c377e0'
 };
 
 export function CardItem({ card, index, onClick }: { card: Card, index: number, onClick: () => void }) {

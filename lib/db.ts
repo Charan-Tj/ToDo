@@ -58,14 +58,34 @@ export const db = {
     return data[0] as List;
   },
 
+  async updateListPositions(listIdsInOrder: string[]) {
+    const updates = listIdsInOrder.map((id, index) =>
+      supabase.from('lists').update({ position: (index + 1) * 1000 }).eq('id', id)
+    );
+    const results = await Promise.all(updates);
+    const failed = results.find((res) => res.error);
+    if (failed?.error) throw failed.error;
+  },
+
   async updateListTitle(id: string, title: string) {
     const { error } = await supabase.from('lists').update({ title }).eq('id', id);
     if (error) throw error;
   },
 
-  async updateListColor(id: string, bg_color: string) {
+  async updateListColor(id: string, bg_color: string): Promise<boolean> {
     const { error } = await supabase.from('lists').update({ bg_color }).eq('id', id);
-    if (error) throw error;
+    if (!error) return true;
+
+    const msg = String(error.message || '').toLowerCase();
+    const details = String((error as { details?: string }).details || '').toLowerCase();
+    const columnMissing = msg.includes("bg_color") && (msg.includes("schema cache") || msg.includes("column"));
+    const detailsColumnMissing = details.includes("bg_color") && details.includes("column");
+
+    // Older DB schemas may not have lists.bg_color yet.
+    // Treat it as unsupported and let the UI fall back to local-only color state.
+    if (columnMissing || detailsColumnMissing) return false;
+
+    throw error;
   },
 
   async archiveList(id: string) {

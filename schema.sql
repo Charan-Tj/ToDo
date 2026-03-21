@@ -2,7 +2,7 @@
 create table boards (
   id uuid primary key default gen_random_uuid(),
   name text not null,
-  bg_color text default '#0079BF',
+  bg_color text default '#3D5A53',
   created_by uuid references auth.users(id),
   created_at timestamptz default now()
 );

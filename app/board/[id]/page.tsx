@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useBoard } from "@/hooks/useBoard";
 import { useRealtime } from "@/hooks/useRealtime";
 import { db } from "@/lib/db";
@@ -30,10 +30,25 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   });
 
   const onDragEnd = async (result: DropResult) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
     if (!destination) return;
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
     if (!data) return;
+
+    if (type === "list") {
+      const orderedLists = [...data.lists].sort((a, b) => a.position - b.position);
+      const nextLists = [...orderedLists];
+      const [moved] = nextLists.splice(source.index, 1);
+      nextLists.splice(destination.index, 0, moved);
+
+      try {
+        await db.updateListPositions(nextLists.map((list) => list.id));
+        refresh();
+      } catch (e) {
+        toast((e as Error).message, 'error');
+      }
+      return;
+    }
 
     const sourceList = data.lists.find(l => l.id === source.droppableId);
     const destList = data.lists.find(l => l.id === destination.droppableId);
@@ -69,8 +84,9 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   const handleAddListSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newListTitle.trim() || !data) return;
-    
-    const pos = data.lists.length > 0 ? data.lists[data.lists.length - 1].position + 1000 : 1000;
+
+    const orderedLists = [...data.lists].sort((a, b) => a.position - b.position);
+    const pos = orderedLists.length > 0 ? orderedLists[orderedLists.length - 1].position + 1000 : 1000;
     try {
       await db.createList(params.id, newListTitle.trim(), pos);
       setNewListTitle("");
@@ -83,6 +99,8 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
   if (loading) return <div className="flex-1 flex items-center justify-center transition-colors"><LoadingSpinner color="border-[var(--primary)]" size="lg" /></div>;
   if (error || !data) return <div className="text-red-500 p-8 transition-colors">Error: {error}</div>;
+
+  const orderedLists = [...data.lists].sort((a, b) => a.position - b.position);
 
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg" style={{ backgroundColor: data.board.bg_color }}>
@@ -119,50 +137,70 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
       {/* Render different views based on selection */}
       {currentView === "board" ? (
-        <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 whitespace-nowrap custom-scrollbar flex items-start gap-3 relative z-10 h-full">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 whitespace-nowrap custom-scrollbar relative z-10 h-full">
           <DragDropContext onDragEnd={onDragEnd}>
-            <AnimatePresence>
-              {data.lists.map((list) => {
-                const listCards = data.cards.filter(c => c.list_id === list.id).sort((a,b)=>a.position-b.position);
-                return (
-                  <ListColumn
-                    key={list.id}
-                    list={list}
-                    cards={listCards}
-                    onRefresh={refresh}
-                    onOpenCard={(id) => setSelectedCardId(id)}
-                  />
-                );
-              })}
-            </AnimatePresence>
-          </DragDropContext>
+            <div className="flex items-start gap-3 h-full">
+              <Droppable droppableId="board-lists" direction="horizontal" type="list">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps} className="flex items-start gap-3 h-full">
+                    <AnimatePresence>
+                      {orderedLists.map((list, index) => {
+                        const listCards = data.cards.filter(c => c.list_id === list.id).sort((a, b) => a.position - b.position);
+                        return (
+                          <Draggable key={list.id} draggableId={list.id} index={index}>
+                            {(dragProvided) => (
+                              <div
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                style={dragProvided.draggableProps.style}
+                                className="shrink-0"
+                              >
+                                <ListColumn
+                                  list={list}
+                                  cards={listCards}
+                                  onRefresh={refresh}
+                                  onOpenCard={(id) => setSelectedCardId(id)}
+                                  listDragHandleProps={dragProvided.dragHandleProps}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                    </AnimatePresence>
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
 
-          {isAddingList ? (
-             <div className="w-[272px] shrink-0 app-surface p-2.5 transition-all">
-               <form onSubmit={handleAddListSubmit}>
-                 <input
-                   autoFocus
-                   value={newListTitle}
-                   onChange={e => setNewListTitle(e.target.value)}
-                   onKeyDown={e => { if (e.key === 'Escape') setIsAddingList(false); }}
-                   placeholder="Enter list title..."
-                   className="input-base mb-2"
-                 />
-                 <div className="flex items-center gap-2">
-                   <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add list</button>
-                   <button type="button" onClick={() => setIsAddingList(false)} className="btn btn-ghost p-2"><X size={20} /></button>
+              {isAddingList ? (
+                 <div className="w-[272px] shrink-0 app-surface p-2.5 transition-all">
+                   <form onSubmit={handleAddListSubmit}>
+                     <input
+                       autoFocus
+                       value={newListTitle}
+                       onChange={e => setNewListTitle(e.target.value)}
+                       onKeyDown={e => { if (e.key === 'Escape') setIsAddingList(false); }}
+                       placeholder="Enter list title..."
+                       className="input-base mb-2"
+                     />
+                     <div className="flex items-center gap-2">
+                       <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add list</button>
+                       <button type="button" onClick={() => setIsAddingList(false)} className="btn btn-ghost p-2"><X size={20} /></button>
+                     </div>
+                   </form>
                  </div>
-               </form>
-             </div>
-           ) : (
-             <button
-               onClick={() => setIsAddingList(true)}
-               className="w-[272px] shrink-0 bg-white/25 hover:bg-white/35 text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-md border border-white/35"
-             >
-               <Plus size={18} />
-               Add another list
-             </button>
-           )}
+               ) : (
+                 <button
+                   onClick={() => setIsAddingList(true)}
+                   className="w-[272px] shrink-0 bg-white/25 hover:bg-white/35 text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-md border border-white/35"
+                 >
+                   <Plus size={18} />
+                   Add another list
+                 </button>
+               )}
+            </div>
+          </DragDropContext>
         </div>
       ) : currentView === "table" ? (
         <TableView

@@ -42,7 +42,7 @@ export default function LoginPage() {
       >
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f84d0)] flex items-center justify-center shadow-md">
+            <div className="w-12 h-12 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f7f76)] flex items-center justify-center shadow-md">
               <LayoutGrid size={28} className="text-white" />
             </div>
           </div>

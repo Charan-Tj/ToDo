@@ -9,7 +9,7 @@ import { Card } from "@/lib/types";
 
 const LABEL_COLORS: Record<string, string> = {
   red: '#eb5a46', orange: '#ff9f1a', yellow: '#f2d600',
-  green: '#61bd4f', blue: '#0079bf', purple: '#c377e0'
+  green: '#61bd4f', blue: '#3f7a73', purple: '#c377e0'
 };
 
 export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: string, onClose: () => void, onRefresh: () => void }) {
@@ -70,7 +70,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
 
         <div className="p-6 flex flex-col gap-5">
           <input
-            className="text-xl font-semibold bg-transparent text-[#172b4d] dark:text-white border-none outline-none focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_2px_#0c66e4] dark:focus:shadow-[0_0_0_2px_#579dff] rounded-lg px-3 py-2 -ml-3 transition-all"
+            className="text-xl font-semibold bg-transparent text-[#172b4d] dark:text-white border-none outline-none focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_2px_var(--primary)] rounded-lg px-3 py-2 -ml-3 transition-all"
             defaultValue={card.title}
             onBlur={e => e.target.value.trim() && updateField('title', e.target.value.trim())}
           />
@@ -80,7 +80,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
               <div>
                 <h3 className="text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] mb-2 uppercase tracking-wide">Description</h3>
                 <textarea
-                  className="w-full bg-white dark:bg-[#22272B] hover:bg-[#fafbfc] dark:hover:bg-[#2C333A] focus:bg-white dark:focus:bg-[#22272B] border border-[#091e4214] dark:border-[#A6C5E2]/10 focus:border-[#0c66e4] dark:focus:border-[#579dff] rounded-lg p-3 text-sm text-[#172b4d] dark:text-[#B6C2CF] outline-none min-h-[100px] resize-y transition-all shadow-sm"
+                  className="w-full bg-white dark:bg-[#22272B] hover:bg-[#fafbfc] dark:hover:bg-[#2C333A] focus:bg-white dark:focus:bg-[#22272B] border border-[#091e4214] dark:border-[#A6C5E2]/10 focus:border-[var(--primary)] rounded-lg p-3 text-sm text-[#172b4d] dark:text-[#B6C2CF] outline-none min-h-[100px] resize-y transition-all shadow-sm"
                   placeholder="Add a more detailed description..."
                   value={desc}
                   onChange={e => setDesc(e.target.value)}
@@ -97,7 +97,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
                         type="checkbox"
                         checked={item.done}
                         onChange={e => toggleCheck(idx, e.target.checked)}
-                        className="w-4 h-4 rounded border-2 border-[#091e4224] dark:border-[#A6C5E2]/10 text-[#0c66e4] dark:text-[#579dff] focus:ring-[#0c66e4] dark:focus:ring-[#579dff] focus:ring-2 cursor-pointer"
+                        className="w-4 h-4 rounded border-2 border-[#091e4224] dark:border-[#A6C5E2]/10 text-[var(--primary)] focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
                       />
                       <span className={`text-sm flex-1 ${item.done ? 'line-through text-[#44546f] dark:text-[#9fadbc]' : 'text-[#172b4d] dark:text-[#B6C2CF]'}`}>{item.text}</span>
                       <button
@@ -111,7 +111,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
                     </div>
                   ))}
                   <input
-                    className="mt-1 text-sm p-2.5 bg-white dark:bg-[#22272B] border border-[#091e4214] dark:border-[#A6C5E2]/10 rounded-lg hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:border-[#0c66e4] dark:focus:border-[#579dff] focus:bg-white dark:focus:bg-[#22272B] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc]"
+                    className="mt-1 text-sm p-2.5 bg-white dark:bg-[#22272B] border border-[#091e4214] dark:border-[#A6C5E2]/10 rounded-lg hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:border-[var(--primary)] focus:bg-white dark:focus:bg-[#22272B] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc]"
                     placeholder="Add an item..."
                     value={chkInput}
                     onChange={e=>setChkInput(e.target.value)}
@@ -145,7 +145,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
                 <h3 className="text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] mb-2 uppercase tracking-wide">Due Date</h3>
                 <input
                   type="date"
-                  className="w-full rounded-lg p-2 text-sm border border-[#091e4214] dark:border-[#A6C5E2]/10 bg-white dark:bg-[#22272B] hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:bg-white dark:focus:bg-[#22272B] focus:border-[#0c66e4] dark:focus:border-[#579dff] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF]"
+                  className="w-full rounded-lg p-2 text-sm border border-[#091e4214] dark:border-[#A6C5E2]/10 bg-white dark:bg-[#22272B] hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:bg-white dark:focus:bg-[#22272B] focus:border-[var(--primary)] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF]"
                   defaultValue={card.due_date || ""}
                   onChange={e => updateField('due_date', e.target.value || null)}
                 />
@@ -156,7 +156,7 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
                 <input
                   type="text"
                   placeholder="Assign to..."
-                  className="w-full rounded-lg p-2 text-sm border border-[#091e4214] dark:border-[#A6C5E2]/10 bg-white dark:bg-[#22272B] hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:bg-white dark:focus:bg-[#22272B] focus:border-[#0c66e4] dark:focus:border-[#579dff] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc]"
+                  className="w-full rounded-lg p-2 text-sm border border-[#091e4214] dark:border-[#A6C5E2]/10 bg-white dark:bg-[#22272B] hover:border-[#091e4224] dark:hover:border-[#A6C5E2]/15 focus:bg-white dark:focus:bg-[#22272B] focus:border-[var(--primary)] outline-none shadow-sm transition-all text-[#172b4d] dark:text-[#B6C2CF] placeholder-[#44546f] dark:placeholder-[#9fadbc]"
                   defaultValue={card.assignee || ""}
                   onBlur={e => updateField('assignee', e.target.value.trim())}
                 />

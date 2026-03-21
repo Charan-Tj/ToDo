@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 100, opacity: 0 }}
               className={`p-4 rounded-[12px] border shadow-[0_10px_30px_rgba(16,34,58,0.22)] text-white pointer-events-auto min-w-[250px] backdrop-blur-md
-                ${t.type === 'error' ? 'bg-[#c0352b]/95 border-[#dd7d74]' : t.type === 'success' ? 'bg-[#1e8a5a]/95 border-[#6ebf99]' : 'bg-[#0f6cbd]/95 border-[#76addc]'}
+                ${t.type === 'error' ? 'bg-[#c0352b]/95 border-[#dd7d74]' : t.type === 'success' ? 'bg-[#1e8a5a]/95 border-[#6ebf99]' : 'bg-[#1f6f66]/95 border-[#6aa79f]'}
               `}
             >
               <div className="text-sm font-medium">{t.msg}</div>

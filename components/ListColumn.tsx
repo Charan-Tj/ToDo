@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Droppable } from "@hello-pangea/dnd";
+import type { DraggableProvidedDragHandleProps } from "@hello-pangea/dnd";
 import { List, Card } from "@/lib/types";
 import { CardItem } from "./CardItem";
 import { db } from "@/lib/db";
@@ -10,28 +11,37 @@ import { Plus, MoreHorizontal, X, Trash2, Minus, Copy, Move, Eye, Palette, Zap, 
 import { useState, useRef, useEffect } from "react";
 
 const LIST_COLORS = [
-  { name: 'None', value: '#ebecf0' },
+  { name: 'Default', value: '#d6e0da' },
   { name: 'Green', value: '#4bce97' },
   { name: 'Yellow', value: '#f5cd47' },
   { name: 'Orange', value: '#faa53d' },
   { name: 'Red', value: '#f87168' },
   { name: 'Purple', value: '#9f8fef' },
-  { name: 'Blue', value: '#579dff' },
-  { name: 'Sky', value: '#6cc3e0' },
+  { name: 'Teal', value: '#5f8f87' },
+  { name: 'Slate', value: '#607687' },
   { name: 'Lime', value: '#94c748' },
   { name: 'Pink', value: '#e774bb' },
   { name: 'Black', value: '#8590a2' },
 ];
 
-export function ListColumn({ list, cards, onRefresh, onOpenCard }: { list: List, cards: Card[], onRefresh: () => void, onOpenCard: (id: string) => void }) {
+const getListColorStorageKey = (listId: string) => `copyflow:list-color:${listId}`;
+const DEFAULT_LIST_COLOR = '#d6e0da';
+
+export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleProps }: { list: List, cards: Card[], onRefresh: () => void, onOpenCard: (id: string) => void, listDragHandleProps?: DraggableProvidedDragHandleProps | null }) {
   const toast = useToast();
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [listColor, setListColor] = useState(list.bg_color || '#ebecf0');
+  const [listColor, setListColor] = useState(list.bg_color || DEFAULT_LIST_COLOR);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setListColor(list.bg_color || DEFAULT_LIST_COLOR);
+    const savedColor = localStorage.getItem(getListColorStorageKey(list.id));
+    if (savedColor) setListColor(savedColor);
+  }, [list.id, list.bg_color]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -91,9 +101,11 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard }: { list: List,
 
   const handleChangeColor = async (color: string) => {
     try {
-      await db.updateListColor(list.id, color);
       setListColor(color);
-      onRefresh();
+      localStorage.setItem(getListColorStorageKey(list.id), color);
+
+      const persisted = await db.updateListColor(list.id, color);
+      if (persisted) onRefresh();
       setShowColorPicker(false);
       setShowMenu(false);
     } catch(e) { toast((e as Error).message, 'error'); }
@@ -118,7 +130,7 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard }: { list: List,
       className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal shadow-[0_4px_12px_rgba(0,0,0,0.16)] transition-colors"
       style={{ backgroundColor: listColor }}
     >
-      <div className="pl-3 pr-2 pt-2 pb-1 flex items-center justify-between group relative">
+      <div className="pl-3 pr-2 pt-2 pb-1 flex items-center justify-between group relative" {...(listDragHandleProps || {})}>
         <input
           className="flex-1 font-semibold text-[#172b4d] dark:text-[#B6C2CF] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
           defaultValue={list.title}
