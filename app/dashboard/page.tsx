@@ -98,7 +98,7 @@ export default function DashboardPage() {
 
   return (
     <div className="relative flex-1 overflow-y-auto w-full custom-scrollbar text-[var(--text)] transition-colors app-grid-bg">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_5%_0%,rgba(15,108,189,0.08),transparent_34%),radial-gradient(circle_at_100%_20%,rgba(30,138,90,0.07),transparent_32%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_5%_0%,rgba(31,111,102,0.08),transparent_34%),radial-gradient(circle_at_100%_20%,rgba(98,114,126,0.07),transparent_32%)]" />
       <div className="relative max-w-6xl mx-auto p-6 md:p-8">
 
         <div className="flex items-center gap-3 mb-6">

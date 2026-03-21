@@ -31,7 +31,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(15,108,189,0.2),transparent_40%),radial-gradient(circle_at_85%_0%,rgba(30,138,90,0.14),transparent_35%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(31,111,102,0.2),transparent_40%),radial-gradient(circle_at_85%_0%,rgba(93,107,118,0.14),transparent_35%)]" />
       <div className="absolute inset-0 opacity-40 bg-[linear-gradient(110deg,transparent_0%,rgba(255,255,255,0.08)_45%,transparent_100%)]" />
 
       <motion.div
