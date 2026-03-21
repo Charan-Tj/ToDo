@@ -30,11 +30,11 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
   };
 
   return (
-    <div className="flex-1 bg-white dark:bg-[#1d2125] transition-colors overflow-hidden flex flex-col">
+    <div className="flex-1 transition-colors overflow-hidden flex flex-col app-surface rounded-none border-x-0 border-b-0">
       {/* Header */}
-      <div className="h-12 px-4 flex items-center justify-between bg-white dark:bg-[#282E33] border-b border-[#091e4214] dark:border-[#A6C5E2]/10 shrink-0">
-        <h2 className="text-lg font-semibold text-[#172b4d] dark:text-white">Table View</h2>
-        <div className="text-sm text-[#44546f] dark:text-[#9fadbc]">
+      <div className="h-12 px-4 flex items-center justify-between bg-[var(--bg-elevated)] border-b border-[var(--border)] shrink-0">
+        <h2 className="text-lg font-semibold text-[var(--text)]">Table View</h2>
+        <div className="text-sm text-[var(--text-muted)]">
           {cards.length} {cards.length === 1 ? 'card' : 'cards'}
         </div>
       </div>
@@ -42,39 +42,39 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
       {/* Table Container */}
       <div className="flex-1 overflow-auto">
         <table className="w-full min-w-[800px]">
-          <thead className="bg-[#f7f8f9] dark:bg-[#22272B] sticky top-0 z-10">
+          <thead className="bg-[var(--bg-muted)] sticky top-0 z-10">
             <tr>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)]">
                 <div className="flex items-center gap-2">
                   <Archive size={14} />
                   Card
                 </div>
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10 w-48">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)] w-48">
                 <div className="flex items-center gap-2">
                   <Archive size={14} />
                   List
                 </div>
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10 w-32">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)] w-32">
                 <div className="flex items-center gap-2">
                   <Tag size={14} />
                   Labels
                 </div>
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10 w-32">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)] w-32">
                 <div className="flex items-center gap-2">
                   <User size={14} />
                   Members
                 </div>
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10 w-40">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)] w-40">
                 <div className="flex items-center gap-2">
                   <Calendar size={14} />
                   Due Date
                 </div>
               </th>
-              <th className="text-left px-4 py-3 text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] uppercase tracking-wide border-b border-[#091e4214] dark:border-[#A6C5E2]/10 w-32">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide border-b border-[var(--border)] w-32">
                 <div className="flex items-center gap-2">
                   <CheckSquare size={14} />
                   Checklist
@@ -85,7 +85,7 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
           <tbody>
             {cards.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-[#44546f] dark:text-[#9fadbc]">
+                <td colSpan={6} className="px-4 py-12 text-center text-[var(--text-muted)]">
                   No cards to display
                 </td>
               </tr>
@@ -99,21 +99,21 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
                   <tr
                     key={card.id}
                     onClick={() => onOpenCard(card.id)}
-                    className="hover:bg-[#f7f8f9] dark:hover:bg-[#22272B] cursor-pointer transition-colors border-b border-[#091e4214] dark:border-[#A6C5E2]/5"
+                    className="hover:bg-[var(--bg-muted)] cursor-pointer transition-colors border-b border-[var(--border)]"
                   >
                     {/* Card Name */}
-                    <td className="px-4 py-3 text-sm text-[#172b4d] dark:text-[#B6C2CF]">
+                    <td className="px-4 py-3 text-sm text-[var(--text)]">
                       <div className="font-medium">{card.title}</div>
                       {card.description && (
-                        <div className="text-xs text-[#44546f] dark:text-[#9fadbc] mt-1 line-clamp-2">
+                        <div className="text-xs text-[var(--text-muted)] mt-1 line-clamp-2">
                           {card.description.substring(0, 100)}...
                         </div>
                       )}
                     </td>
 
                     {/* List */}
-                    <td className="px-4 py-3 text-sm text-[#44546f] dark:text-[#9fadbc]">
-                      <span className="inline-flex px-2 py-1 text-xs font-medium bg-[#091e4214] dark:bg-[#A6C5E2]/10 rounded-full">
+                    <td className="px-4 py-3 text-sm text-[var(--text-muted)]">
+                      <span className="inline-flex px-2 py-1 text-xs font-medium bg-[var(--bg-muted)] rounded-full">
                         {getListName(card.list_id)}
                       </span>
                     </td>
@@ -130,7 +130,7 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
                           />
                         ))}
                         {(card.labels?.length || 0) > 3 && (
-                          <span className="text-xs text-[#44546f] dark:text-[#9fadbc]">+{(card.labels?.length || 0) - 3}</span>
+                          <span className="text-xs text-[var(--text-muted)]">+{(card.labels?.length || 0) - 3}</span>
                         )}
                       </div>
                     </td>
@@ -152,7 +152,7 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
                             ? 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
                             : dueDateStatus === 'today'
                             ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300'
-                            : 'bg-[#091e4214] dark:bg-[#A6C5E2]/10 text-[#44546f] dark:text-[#9fadbc]'
+                            : 'bg-[var(--bg-muted)] text-[var(--text-muted)]'
                         }`}>
                           <Clock size={12} />
                           {formatDate(card.due_date)}
@@ -166,7 +166,7 @@ export function TableView({ cards, lists, onOpenCard }: { cards: Card[], lists: 
                         <div className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-sm ${
                           checklistDone === checklistTotal
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300'
-                            : 'bg-[#091e4214] dark:bg-[#A6C5E2]/10 text-[#44546f] dark:text-[#9fadbc]'
+                            : 'bg-[var(--bg-muted)] text-[var(--text-muted)]'
                         }`}>
                           <CheckSquare size={12} />
                           {checklistDone}/{checklistTotal}

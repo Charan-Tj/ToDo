@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { Trash2, Clock } from "lucide-react";
 import { useBoards } from "@/hooks/useBoards";
 import { db } from "@/lib/db";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
+import { Board } from "@/lib/types";
 
 const BOARD_COLORS = ['#0079BF', '#D29034', '#519839', '#B04632', '#89609E', '#CD5A91', '#4BBF6B', '#00AECC'];
+const DASHBOARD_ORDER_KEY = "copyflow:dashboard-board-order";
+
+function sortBoardsBySavedOrder(items: Board[], savedOrder: string[]) {
+  const orderIndex = new Map(savedOrder.map((id, index) => [id, index]));
+  return [...items].sort((a, b) => {
+    const aPos = orderIndex.has(a.id) ? orderIndex.get(a.id)! : Number.MAX_SAFE_INTEGER;
+    const bPos = orderIndex.has(b.id) ? orderIndex.get(b.id)! : Number.MAX_SAFE_INTEGER;
+    if (aPos !== bPos) return aPos - bPos;
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+}
 
 export default function DashboardPage() {
   const { boards, loading, error, refresh } = useBoards();
@@ -18,8 +30,28 @@ export default function DashboardPage() {
   const [newBoardName, setNewBoardName] = useState("");
   const [newBoardColor, setNewBoardColor] = useState(BOARD_COLORS[0]);
   const [creating, setCreating] = useState(false);
+  const [orderedBoards, setOrderedBoards] = useState<Board[]>([]);
   const router = useRouter();
   const toast = useToast();
+
+  const boardIds = useMemo(() => orderedBoards.map((b) => b.id), [orderedBoards]);
+
+  useEffect(() => {
+    const savedRaw = localStorage.getItem(DASHBOARD_ORDER_KEY);
+    let savedOrder: string[] = [];
+    if (savedRaw) {
+      try {
+        savedOrder = JSON.parse(savedRaw) as string[];
+      } catch {
+        savedOrder = [];
+      }
+    }
+    setOrderedBoards(sortBoardsBySavedOrder(boards, savedOrder));
+  }, [boards]);
+
+  const persistOrder = (items: Board[]) => {
+    localStorage.setItem(DASHBOARD_ORDER_KEY, JSON.stringify(items.map((b) => b.id)));
+  };
 
   if (error) {
     return <div className="p-8 text-red-500">Error: {error}</div>;
@@ -35,7 +67,7 @@ export default function DashboardPage() {
       await db.createBoard(newBoardName, newBoardColor, data.session.user.id);
       setIsModalOpen(false);
       setNewBoardName("");
-      refresh();
+      await refresh();
       toast("Board created", "success");
     } catch (err) {
       toast((err as Error).message, "error");
@@ -49,16 +81,25 @@ export default function DashboardPage() {
     if (!confirm("Delete board forever?")) return;
     try {
       await db.deleteBoard(id);
-      refresh();
+      const nextBoards = orderedBoards.filter((b) => b.id !== id);
+      setOrderedBoards(nextBoards);
+      persistOrder(nextBoards);
+      await refresh();
       toast("Board deleted");
     } catch (err) {
       toast((err as Error).message, "error");
     }
   };
 
+  const handleReorder = (nextOrder: Board[]) => {
+    setOrderedBoards(nextOrder);
+    persistOrder(nextOrder);
+  };
+
   return (
-    <div className="flex-1 p-6 md:p-8 overflow-y-auto w-full custom-scrollbar text-[var(--text)] transition-colors">
-      <div className="max-w-6xl mx-auto">
+    <div className="relative flex-1 overflow-y-auto w-full custom-scrollbar text-[var(--text)] transition-colors app-grid-bg">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_5%_0%,rgba(15,108,189,0.08),transparent_34%),radial-gradient(circle_at_100%_20%,rgba(30,138,90,0.07),transparent_32%)]" />
+      <div className="relative max-w-6xl mx-auto p-6 md:p-8">
 
         <div className="flex items-center gap-3 mb-6">
           <div className="w-11 h-11 rounded-xl bg-[linear-gradient(135deg,var(--primary),#2f84d0)] flex items-center justify-center shadow-md">
@@ -77,36 +118,38 @@ export default function DashboardPage() {
             <LoadingSpinner color="border-[#0c66e4] dark:border-[#579dff]" size="lg" />
           </div>
         ) : (
-          <motion.div
+          <Reorder.Group
+            axis="y"
+            values={orderedBoards}
+            onReorder={handleReorder}
+            as="div"
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[104px]"
-            initial="hidden"
-            animate="show"
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.04 } }
-            }}
           >
-            {boards.map(b => (
-              <motion.div
+            {orderedBoards.map(b => (
+              <Reorder.Item
+                value={b}
                 key={b.id}
-                variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                whileDrag={{ scale: 1.03, zIndex: 10 }}
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => router.push(`/board/${b.id}`)}
-className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.2)] transition-all"
+                className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.2)] transition-all"
                 style={{ backgroundColor: b.bg_color }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-black/15 to-black/35" />
                 <h3 className="relative z-10 text-white font-semibold text-[15px] pt-1 leading-tight break-words drop-shadow">
                   {b.name}
                 </h3>
+                <span className="absolute top-2 right-2 z-10 text-[10px] uppercase tracking-wide px-2 py-0.5 rounded bg-black/25 text-white/90 opacity-0 group-hover:opacity-100 transition-opacity">
+                  Drag
+                </span>
                 <button
                   onClick={(e) => handleDelete(e, b.id)}
                   className="absolute bottom-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 hover:bg-black/30 rounded text-white/90 hover:text-white transition-all z-20"
                 >
                   <Trash2 size={14} />
                 </button>
-              </motion.div>
+              </Reorder.Item>
             ))}
 
             <motion.div
@@ -118,7 +161,11 @@ className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shad
             >
               Create new board
             </motion.div>
-          </motion.div>
+          </Reorder.Group>
+        )}
+
+        {boardIds.length > 1 && (
+          <p className="text-xs text-[var(--text-muted)] mt-3">Drag board tiles to reorder your dashboard.</p>
         )}
       </div>
 

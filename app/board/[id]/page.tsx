@@ -85,10 +85,10 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   if (error || !data) return <div className="text-red-500 p-8 transition-colors">Error: {error}</div>;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative" style={{ backgroundColor: data.board.bg_color }}>
-      <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-black/5" />
+    <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg" style={{ backgroundColor: data.board.bg_color }}>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/18 via-black/8 to-black/12" />
 
-      <div className="h-14 px-4 flex items-center justify-between bg-black/18 backdrop-blur-md shrink-0 relative z-10 w-full border-b border-white/20">
+      <div className="h-14 px-4 flex items-center justify-between bg-black/22 backdrop-blur-md shrink-0 relative z-10 w-full border-b border-white/25">
         <div className="flex items-center gap-2">
           <h1
             className="text-[18px] font-semibold text-white cursor-pointer hover:bg-white/20 rounded-[10px] px-3 py-2 transition-colors"
@@ -119,7 +119,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
       {/* Render different views based on selection */}
       {currentView === "board" ? (
-        <div className="flex-1 overflow-x-auto overflow-y-hidden p-3 whitespace-nowrap custom-scrollbar flex items-start gap-3 relative z-10 h-full">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 whitespace-nowrap custom-scrollbar flex items-start gap-3 relative z-10 h-full">
           <DragDropContext onDragEnd={onDragEnd}>
             <AnimatePresence>
               {data.lists.map((list) => {

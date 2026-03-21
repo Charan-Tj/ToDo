@@ -133,6 +133,14 @@
 }
 
 @layer utilities {
+  .app-grid-bg {
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: center;
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     height: 8px;
     width: 8px;

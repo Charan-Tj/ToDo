@@ -23,11 +23,11 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={onClick}
-          className={`group bg-white dark:bg-[#22272B] hover:bg-[#f5f5f5] dark:hover:bg-[#2C333A] rounded-lg p-2 mb-2 cursor-pointer
-            shadow-[0px_1px_0px_#091e4240] dark:shadow-[0px_1px_1px_#091E4240]
-            hover:shadow-[0px_1px_2px_#091e4240] dark:hover:shadow-[0px_1px_3px_#091E4240]
+          className={`group bg-[var(--bg-elevated)] hover:bg-[var(--bg-muted)] rounded-[12px] p-2.5 mb-2 cursor-pointer
+            border border-[var(--border)] shadow-[0_2px_8px_rgba(16,34,58,0.08)]
+            hover:shadow-[0_10px_22px_rgba(16,34,58,0.18)]
             transition-all duration-75
-            ${snapshot.isDragging ? 'rotate-2 shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25)] ring-2 ring-[#0c66e4] dark:ring-[#579dff] z-50' : ''}
+            ${snapshot.isDragging ? 'rotate-2 shadow-[0_16px_30px_rgba(9,30,66,0.3)] ring-2 ring-[var(--primary)] z-50' : ''}
           `}
           style={provided.draggableProps.style}
         >
@@ -43,18 +43,18 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
             </div>
           )}
 
-          <div className="text-[14px] text-[#172b4d] dark:text-[#B6C2CF] font-normal leading-5 break-words mb-1.5">
+          <div className="text-[14px] text-[var(--text)] font-medium leading-5 break-words mb-1.5">
             {title}
           </div>
 
           {(due_date || checklistTotal > 0 || assignee) && (
-            <div className="flex items-center gap-2 flex-wrap text-[12px] text-[#44546f] dark:text-[#9fadbc] mt-1">
+            <div className="flex items-center gap-2 flex-wrap text-[12px] text-[var(--text-muted)] mt-1">
               {due_date && (
                 <DueDateBadge date={due_date} />
               )}
 
               {checklistTotal > 0 && (
-                <div className={`flex items-center gap-1 px-1 py-0.5 rounded-sm ${checklistDone === checklistTotal ? 'bg-[#1f845a] text-white' : 'hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/[0.16]'}`}>
+                <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md ${checklistDone === checklistTotal ? 'bg-[var(--success)] text-white' : 'bg-[var(--bg-muted)] text-[var(--text-muted)]'}`}>
                   <CheckSquare size={12} />
                   <span className="text-xs font-medium">{checklistDone}/{checklistTotal}</span>
                 </div>
