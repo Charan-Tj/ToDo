@@ -28,7 +28,7 @@ export default function DashboardPage() {
   const { boards, loading, error, refresh } = useBoards();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newBoardName, setNewBoardName] = useState("");
-  const [newBoardColor, setNewBoardColor] = useState(BOARD_COLORS[0]);
+  const [newBoardColor, setNewBoardColor] = useState("");
   const [creating, setCreating] = useState(false);
   const [orderedBoards, setOrderedBoards] = useState<Board[]>([]);
   const router = useRouter();
@@ -64,9 +64,10 @@ export default function DashboardPage() {
     try {
       const { data } = await supabase.auth.getSession();
       if (!data.session) throw new Error("Not logged in");
-      await db.createBoard(newBoardName, newBoardColor, data.session.user.id);
+      await db.createBoard(newBoardName, newBoardColor || "", data.session.user.id);
       setIsModalOpen(false);
       setNewBoardName("");
+      setNewBoardColor("");
       await refresh();
       toast("Board created", "success");
     } catch (err) {
@@ -139,8 +140,8 @@ export default function DashboardPage() {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => router.push(`/board/${b.id}`)}
-                className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.2)] transition-all"
-                style={{ backgroundColor: b.bg_color }}
+                className="relative rounded-[14px] cursor-pointer overflow-hidden p-3 group shadow-[0_3px_10px_rgba(0,0,0,0.12)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.2)] transition-all bg-[linear-gradient(135deg,#3d5a53,#2f4a44)]"
+                style={b.bg_color ? { backgroundColor: b.bg_color } : undefined}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/15 to-black/35" />
                 <div className="absolute inset-x-3 bottom-3 top-11 z-10 rounded-md border border-white/20 bg-black/10 backdrop-blur-[1px] p-2">
@@ -261,6 +262,17 @@ export default function DashboardPage() {
 
                 <label className="block text-xs font-semibold text-[var(--text-muted)] mb-2">Background</label>
                 <div className="grid grid-cols-4 gap-2 mb-6">
+                  <button
+                    type="button"
+                    onClick={() => setNewBoardColor("")}
+                    className={`col-span-2 rounded-md border px-2 py-1.5 text-xs font-medium transition-colors ${
+                      newBoardColor === ""
+                        ? 'border-[var(--primary)] bg-[var(--bg-muted)] text-[var(--text)]'
+                        : 'border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-muted)] hover:bg-[var(--bg-muted)]'
+                    }`}
+                  >
+                    Use theme default
+                  </button>
                   {BOARD_COLORS.map(color => (
                     <button
                       key={color}
