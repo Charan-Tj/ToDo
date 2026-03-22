@@ -25,5 +25,9 @@ export function useBoard(boardId: string) {
     fetchBoardData();
   }, [fetchBoardData]);
 
-  return { data, loading, error, refresh: fetchBoardData };
+  const updateData = useCallback((updater: (current: BoardData | null) => BoardData | null) => {
+    setData((current) => updater(current));
+  }, []);
+
+  return { data, loading, error, refresh: fetchBoardData, updateData };
 }

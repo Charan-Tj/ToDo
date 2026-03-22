@@ -32,10 +32,12 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
   const [showMenu, setShowMenu] = useState(false);
+  const [menuSide, setMenuSide] = useState<"left" | "right">("right");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [listColor, setListColor] = useState(list.bg_color || DEFAULT_LIST_COLOR);
   const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setListColor(list.bg_color || DEFAULT_LIST_COLOR);
@@ -121,14 +123,27 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
     } catch(e) { toast((e as Error).message, 'error'); }
   };
 
+  const toggleMenu = () => {
+    if (!showMenu && menuButtonRef.current) {
+      const triggerRect = menuButtonRef.current.getBoundingClientRect();
+      const menuWidth = 304;
+      const viewportPadding = 8;
+
+      const overflowIfRight = Math.max(0, viewportPadding - (triggerRect.right - menuWidth));
+      const overflowIfLeft = Math.max(0, (triggerRect.left + menuWidth) - (window.innerWidth - viewportPadding));
+      setMenuSide(overflowIfRight <= overflowIfLeft ? "right" : "left");
+    }
+    setShowMenu((prev) => !prev);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.15 }}
-      className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal shadow-[0_4px_12px_rgba(0,0,0,0.16)] transition-colors"
-      style={{ backgroundColor: listColor }}
+      className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal app-surface overflow-visible transition-colors"
+      style={{ borderTop: `3px solid ${listColor}` }}
     >
       <div className="pl-3 pr-2 pt-2 pb-1 flex items-center justify-between group relative" {...(listDragHandleProps || {})}>
         <input
@@ -146,7 +161,8 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
             <Minus size={16} />
           </button>
           <button
-            onClick={() => setShowMenu(!showMenu)}
+            ref={menuButtonRef}
+            onClick={toggleMenu}
             className="p-1.5 text-[#44546f] dark:text-[#9fadbc] hover:bg-[#091e4224] dark:hover:bg-[#A6C5E2]/[0.16] hover:text-[#172b4d] dark:hover:text-[#B6C2CF] rounded transition-colors"
             title="List actions"
           >
@@ -161,7 +177,7 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -5 }}
                 transition={{ duration: 0.1 }}
-                className="absolute right-0 top-8 w-[304px] bg-white dark:bg-[#282E33] rounded-lg shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25)] border border-[#091e4214] dark:border-[#A6C5E2]/10 z-50 py-2"
+                className={`absolute top-8 w-[304px] max-w-[calc(100vw-1rem)] bg-white dark:bg-[#282E33] rounded-lg shadow-[0_8px_16px_-4px_rgba(9,30,66,0.25)] border border-[#091e4214] dark:border-[#A6C5E2]/10 z-50 py-2 ${menuSide === "right" ? "right-0" : "left-0"}`}
               >
                 <div className="px-3 py-2 border-b border-[#091e4214] dark:border-[#A6C5E2]/10">
                   <p className="text-xs text-[#44546f] dark:text-[#B6C2CF] text-center font-medium">List actions</p>
@@ -315,11 +331,18 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
                 onChange={e => setNewCardTitle(e.target.value)}
                 onKeyDown={e => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAddCardSubmit(e); } if (e.key === 'Escape') setIsAddingCard(false); }}
                 placeholder="Enter a title for this card..."
-                className="input-base text-sm resize-none min-h-[72px]"
+                className="input-base text-sm resize-none min-h-[72px] bg-[color:var(--bg-elevated)] placeholder:text-[var(--text-muted)]"
               />
               <div className="flex items-center gap-2 mt-2">
                 <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add card</button>
-                <button type="button" onClick={() => setIsAddingCard(false)} className="btn btn-ghost p-2"><X size={20} /></button>
+                <button
+                  type="button"
+                  onClick={() => setIsAddingCard(false)}
+                  className="p-2 text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--bg-muted)] rounded-md transition-colors"
+                  title="Cancel"
+                >
+                  <X size={20} />
+                </button>
               </div>
             </form>
           ) : (

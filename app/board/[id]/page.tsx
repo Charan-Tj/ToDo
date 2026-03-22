@@ -17,7 +17,7 @@ import { Card } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
 export default function BoardPage({ params }: { params: { id: string } }) {
-  const { data, loading, error, refresh } = useBoard(params.id);
+  const { data, loading, error, refresh, updateData } = useBoard(params.id);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isAddingList, setIsAddingList] = useState(false);
   const [newListTitle, setNewListTitle] = useState("");
@@ -54,16 +54,15 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     const destList = data.lists.find(l => l.id === destination.droppableId);
     if (!sourceList || !destList) return;
 
-    const newCards = Array.from(data.cards);
-    const draggedCardIndex = newCards.findIndex(c => c.id === draggableId);
+    const draggedCardIndex = data.cards.findIndex(c => c.id === draggableId);
     if (draggedCardIndex === -1) return;
 
-    const draggedCard = newCards[draggedCardIndex];
-    draggedCard.list_id = destList.id;
+    const previousData = data;
+    const draggedCard = { ...data.cards[draggedCardIndex], list_id: destList.id };
 
-    const destCards = newCards.filter(c => c.list_id === destList.id).sort((a,b)=>a.position-b.position);
-    const destIdx = destCards.findIndex(c => c.id === draggableId);
-    if (destIdx > -1) destCards.splice(destIdx, 1);
+    const destCards = data.cards
+      .filter(c => c.list_id === destList.id && c.id !== draggableId)
+      .sort((a, b) => a.position - b.position);
     destCards.splice(destination.index, 0, draggedCard);
 
     let newPosition = 0;
@@ -72,11 +71,23 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     else if (destination.index === destCards.length - 1) newPosition = destCards[destCards.length - 2].position + 1000;
     else newPosition = (destCards[destination.index - 1].position + destCards[destination.index + 1].position) / 2;
 
+    updateData((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        cards: current.cards.map((card) =>
+          card.id === draggableId
+            ? { ...card, list_id: destList.id, position: newPosition }
+            : card
+        ),
+      };
+    });
+
     try {
       await db.updateCardPosition(draggableId, destList.id, newPosition);
-      refresh(); 
     } catch(e) {
       toast((e as Error).message, 'error');
+      updateData(() => previousData);
       refresh();
     }
   };
@@ -186,14 +197,21 @@ export default function BoardPage({ params }: { params: { id: string } }) {
                      />
                      <div className="flex items-center gap-2">
                        <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add list</button>
-                       <button type="button" onClick={() => setIsAddingList(false)} className="btn btn-ghost p-2"><X size={20} /></button>
+                       <button
+                         type="button"
+                         onClick={() => setIsAddingList(false)}
+                         className="p-2 text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--bg-muted)] rounded-md transition-colors"
+                         title="Cancel"
+                       >
+                         <X size={20} />
+                       </button>
                      </div>
                    </form>
                  </div>
                ) : (
                  <button
                    onClick={() => setIsAddingList(true)}
-                   className="w-[272px] shrink-0 bg-white/25 hover:bg-white/35 text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-md border border-white/35"
+                   className="w-[272px] shrink-0 bg-white/18 hover:bg-white/26 text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-md border border-white/55"
                  >
                    <Plus size={18} />
                    Add another list
