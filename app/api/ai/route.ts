@@ -64,18 +64,20 @@ Example: { "tasks": [{"id": "123", "quadrant": "q1"}, {"id": "456", "quadrant": 
       try {
         const parsedErr = JSON.parse(err);
         errMsg = parsedErr.error?.message || err;
-      } catch (e) {}
+      } catch {
+        // Ignore parse error
+      }
       throw new Error(`OpenAI error: ${errMsg}`);
     }
 
     const data = await response.json();
-    let content = data.choices[0].message.content.trim();
+    const content = data.choices[0].message.content.trim();
     
     // Parse the JSON
     try {
       const parsed = JSON.parse(content);
       return NextResponse.json({ result: parsed.tasks });
-    } catch (e) {
+    } catch {
       throw new Error("Failed to parse AI response as JSON or missing 'tasks' key");
     }
 
