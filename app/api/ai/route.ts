@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const modelUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    const modelUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
 
     let prompt = "";
 
@@ -56,7 +56,6 @@ ${JSON.stringify(payload.tasks)}`;
           }
         ],
         generationConfig: {
-          responseMimeType: "application/json",
           temperature: 0.1,
         }
       }),
@@ -75,7 +74,10 @@ ${JSON.stringify(payload.tasks)}`;
     }
 
     const data = await response.json();
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    let content = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+    
+    // Sometimes older models wrap JSON in markdown block even if told not to.
+    content = content.replace(/^```json/i, '').replace(/```$/i, '').trim();
 
     if (!content) {
       throw new Error("Empty response from AI");
