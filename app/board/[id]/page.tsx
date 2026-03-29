@@ -118,7 +118,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg">
       <div className="absolute inset-0 bg-gradient-to-b from-black/18 via-black/8 to-black/12" />
 
-      <div className="h-14 px-4 flex items-center justify-between glass-navbar shrink-0 relative z-10 w-full">
+      <div className="h-14 px-4 flex items-center justify-between glass-navbar shrink-0 relative z-30 w-full">
         <div className="flex items-center gap-2">
           <h1
             className="text-[18px] font-semibold text-white cursor-pointer hover:bg-white/20 rounded-[10px] px-3 py-2 transition-colors"
@@ -149,7 +149,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
       {/* Render different views based on selection */}
       {currentView === "board" ? (
-        <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 whitespace-nowrap custom-scrollbar relative z-10 h-full">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden p-4 whitespace-nowrap custom-scrollbar relative z-0 h-full">
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex items-start gap-3 h-full">
               <Droppable droppableId="board-lists" direction="horizontal" type="list">
