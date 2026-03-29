@@ -98,8 +98,8 @@ export const db = {
     if (error) throw error;
   },
 
-  async createCard(list_id: string, title: string, position: number) {
-    const { data, error } = await supabase.from('cards').insert([{ list_id, title, position }]).select();
+  async createCard(list_id: string, title: string, position: number, extra?: Partial<Card>) {
+    const { data, error } = await supabase.from('cards').insert([{ list_id, title, position, ...extra }]).select();
     if (error) throw error;
     return data[0] as Card;
   },

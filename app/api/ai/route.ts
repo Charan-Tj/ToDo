@@ -18,9 +18,16 @@ export async function POST(req: Request) {
     let prompt = "";
 
     if (action === "extract") {
-      prompt = `You are a task management assistant. Extract a list of distinct tasks from the user's input below.
-Return ONLY a valid JSON object with a key "tasks" containing an array of strings. Do not include markdown formatting.
-Example: { "tasks": ["Buy milk", "Email John about the project report"] }
+      const today = new Date().toISOString();
+      prompt = `You are an intelligent task management assistant. Extract a list of distinct tasks from the user's input below.
+Return ONLY a valid JSON object with a key "tasks" containing an array of task objects. Do not include markdown formatting.
+Each object MUST have:
+- "title": A concise action-oriented title.
+- "description": Any additional details, subtasks, or context provided. Leave empty string if none.
+- "due_date": Analyze the text for any date/time mentions. If found, calculate the precise ISO 8601 date string relative to today's date (${today}). If no date is mentioned, set to null.
+- "labels": Analyze the text for urgency and importance. Valid strings to include: "urgent", "important". If the task is specifically low priority (Not Urgent & Not Important / Eliminate), include ["classified"]. If the task is completely unknown/neutral, return an empty array [] so it lands in the user's Inbox.
+
+Example: { "tasks": [{ "title": "Scroll random social media", "description": "Probably a bad idea", "due_date": null, "labels": ["classified"] }, { "title": "Buy milk", "description": "", "due_date": "2026-04-30T00:00:00.000Z", "labels": ["important"] }] }
 
 User Input:
 ${payload.text}`;

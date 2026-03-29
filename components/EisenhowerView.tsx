@@ -114,12 +114,20 @@ export function EisenhowerView({
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       
-      const tasks: string[] = data.result;
+      const tasks: { title: string, description?: string, due_date?: string, labels?: string[] }[] = data.result;
       if (!tasks || !tasks.length) throw new Error("No tasks found");
 
       const listId = selectedListId || lists[0].id;
       for (const t of tasks) {
-        await db.createCard(listId, t, 999999); 
+        // AI might return labels like "urgent" or "important". We also add "classified" if it gave labels,
+        // so it actually goes to the right quadrant. Actually let's just use what it gave, 
+        // and if it gave urgent or important, they count.
+        const extra: Partial<Card> = {
+          labels: t.labels || [],
+        };
+        if (t.description) extra.description = t.description;
+        if (t.due_date) extra.due_date = t.due_date;
+        await db.createCard(listId, t.title || "Untitled Task", 999999, extra); 
       }
       setAiText("");
       onRefresh();
