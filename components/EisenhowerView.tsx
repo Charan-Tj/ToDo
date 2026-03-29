@@ -2,7 +2,7 @@
 
 import { Card, List } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, AlertTriangle, Clock, Trash2, Calendar, Plus, X, Inbox, ChevronRight } from "lucide-react";
+import { Check, AlertTriangle, Clock, Trash2, Calendar, Plus, X, Inbox, ChevronRight, Wand2, Send, Sparkles } from "lucide-react";
 import { db } from "@/lib/db";
 import { useToast } from "./Toast";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
@@ -91,6 +91,83 @@ export function EisenhowerView({
   const inboxInputRef = useRef<HTMLInputElement>(null);
   const [inboxTitle, setInboxTitle] = useState("");
   const [addingToInbox, setAddingToInbox] = useState(false);
+
+  // AI State
+  const [aiText, setAiText] = useState("");
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [isPlotting, setIsPlotting] = useState(false);
+
+  const handleAIExtract = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!aiText.trim() || !lists[0]) return;
+    setIsExtracting(true);
+    try {
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "extract", payload: { text: aiText } })
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      
+      const tasks: string[] = data.result;
+      if (!tasks || !tasks.length) throw new Error("No tasks found");
+
+      const listId = selectedListId || lists[0].id;
+      for (const t of tasks) {
+        await db.createCard(listId, t, 999999); 
+      }
+      setAiText("");
+      onRefresh();
+      toast(`Extracted ${tasks.length} tasks!`, "success");
+    } catch(err) {
+      toast((err as Error).message, "error");
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const handleAIPlot = async () => {
+    if (!inboxCards.length) return;
+    setIsPlotting(true);
+    try {
+      const payloadTasks = inboxCards.map(c => ({ id: c.id, title: c.title }));
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "classify", payload: { tasks: payloadTasks } })
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const classifications: {id: string, quadrant: string}[] = data.result;
+      
+      for (const cls of classifications) {
+        const q = QUADRANTS.find(quad => quad.id === cls.quadrant);
+        if (q) {
+           const card = localCards.find(c => c.id === cls.id);
+           if (card) {
+              const newLabels = applyQuadrantLabels(card.labels ?? [], q);
+              await db.updateCard(cls.id, { labels: newLabels });
+           }
+        }
+      }
+      onRefresh();
+      toast(`Auto-plotted ${classifications.length} tasks!`, "success");
+    } catch(err) {
+      toast((err as Error).message, "error");
+    } finally {
+      setIsPlotting(false);
+    }
+  };
 
   const openAddCard = (qId: string) => {
     setAddingIn(qId);
@@ -332,9 +409,19 @@ export function EisenhowerView({
                     <div className="text-xs text-[var(--text-muted)]">Unclassified tasks</div>
                   </div>
                 </div>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] min-w-[22px] text-center">
-                  {inboxCards.length}
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleAIPlot}
+                    disabled={isPlotting || inboxCards.length === 0}
+                    title="Auto-plot with AI"
+                    className="p-1.5 rounded bg-[var(--primary)]/10 text-[var(--primary)] hover:bg-[var(--primary)]/20 transition-colors disabled:opacity-50 disabled:hover:bg-[var(--primary)]/10"
+                  >
+                    <Wand2 size={13} className={isPlotting ? "animate-pulse" : ""} />
+                  </button>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-[var(--primary)]/20 text-[var(--primary)] min-w-[22px] text-center">
+                    {inboxCards.length}
+                  </span>
+                </div>
               </div>
 
               {/* Quick-add input */}
@@ -403,6 +490,38 @@ export function EisenhowerView({
                   </div>
                 )}
               </Droppable>
+
+              {/* Bottom AI Chat Section */}
+              <div className="border-t border-[var(--border)] p-3 bg-[var(--bg-muted)] shrink-0">
+                <form onSubmit={handleAIExtract} className="flex flex-col gap-2">
+                  <div className="relative">
+                    <textarea 
+                      value={aiText}
+                      onChange={e => setAiText(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleAIExtract();
+                        }
+                      }}
+                      placeholder="Ask AI to create tasks from your thoughts..."
+                      className="w-full text-xs p-2.5 pr-8 rounded border border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text)] outline-none focus:border-[var(--primary)] resize-none"
+                      rows={2}
+                    />
+                    <button 
+                      type="submit"
+                      disabled={isExtracting || !aiText.trim()}
+                      className="absolute right-1.5 bottom-1.5 p-1.5 text-[var(--primary)] hover:bg-[var(--primary)]/10 rounded transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+                    >
+                       {isExtracting ? <div className="w-3.5 h-3.5 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" /> : <Send size={14} />}
+                    </button>
+                  </div>
+                  <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-1.5">
+                    <Sparkles size={10} className="text-[var(--primary)]" />
+                    AI extracts multiple tasks
+                  </div>
+                </form>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
