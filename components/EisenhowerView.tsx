@@ -142,18 +142,17 @@ export function EisenhowerView({
 
   const handleToggleComplete = async (e: React.MouseEvent, card: Card) => {
     e.stopPropagation();
+    const currentLabels = card.labels ?? [];
+    const isCompleted = currentLabels.includes('done');
+    const newLabels = isCompleted
+      ? currentLabels.filter(l => l !== 'done')
+      : [...currentLabels, 'done'];
+    setLocalCards(prev => prev.map(c => c.id === card.id ? { ...c, labels: newLabels } : c));
     try {
-      const currentLabels = card.labels ?? [];
-      const isCompleted = currentLabels.includes('done');
-      const newLabels = isCompleted
-        ? currentLabels.filter(l => l !== 'done')
-        : [...currentLabels, 'done'];
-      setLocalCards(prev => prev.map(c => c.id === card.id ? { ...c, labels: newLabels } : c));
       await db.updateCard(card.id, { labels: newLabels });
-      onRefresh();
     } catch (err) {
+      setLocalCards(prev => prev.map(c => c.id === card.id ? { ...c, labels: currentLabels } : c));
       toast((err as Error).message, "error");
-      onRefresh();
     }
   };
 
@@ -181,9 +180,9 @@ export function EisenhowerView({
 
     try {
       await db.updateCard(card.id, { labels: newLabels });
-      onRefresh();
+      // No re-fetch — realtime handles cross-user sync
     } catch (err) {
-      setLocalCards(previousCards);
+      setLocalCards(previousCards); // rollback
       toast((err as Error).message, "error");
     }
   };
