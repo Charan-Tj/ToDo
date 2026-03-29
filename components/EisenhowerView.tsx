@@ -81,10 +81,10 @@ export function EisenhowerView({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: qi * 0.07 }}
-              className={`bg-[#161B22] border ${q.borderColor} rounded-xl flex flex-col overflow-hidden`}
+              className={`bg-[var(--bg-elevated)] border ${q.borderColor} rounded-xl flex flex-col overflow-hidden`}
             >
               {/* Header */}
-              <div className={`flex items-center justify-between px-4 py-3 border-b ${q.headerColor} bg-[#0D1117]`}>
+              <div className={`flex items-center justify-between px-4 py-3 border-b ${q.headerColor} bg-[var(--bg-muted)]`}>
                 <div className="flex items-center gap-2">
                   {q.icon}
                   <div>
@@ -109,7 +109,7 @@ export function EisenhowerView({
                     key={card.id}
                     whileHover={{ y: -1 }}
                     onClick={() => onOpenCard(card.id)}
-                    className={`group relative bg-[#21262D] hover:bg-[#2D333B] border border-[#30363D] hover:border-[#484F58]
+                    className={`group relative bg-[var(--bg-muted)] hover:bg-[var(--bg-elevated)] border border-[var(--border)] hover:border-[var(--primary)]/40
                       rounded-lg px-3 py-2.5 cursor-pointer transition-all
                       ${card.completed ? 'opacity-50' : ''}`}
                   >

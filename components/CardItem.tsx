@@ -38,13 +38,13 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={onClick}
-          className={`group relative bg-[#22272B] hover:bg-[#2C333A] rounded-lg p-[8px_12px] mb-2 cursor-pointer
-            shadow-[0px_1px_1px_#091E4240,0px_0px_1px_#091E424F]
-            hover:shadow-[0px_1px_3px_#091E4240,0px_0px_1px_#091E424F]
-            ring-inset hover:ring-1 hover:ring-[#A6C5E2]/[0.16]
+          className={`group relative bg-[var(--bg-elevated)] hover:bg-[var(--bg-muted)] rounded-lg p-[8px_12px] mb-2 cursor-pointer
+            shadow-[var(--shadow-sm)]
+            hover:shadow-[var(--shadow-md)]
+            ring-inset hover:ring-1 hover:ring-[var(--primary)]/20
             transition-colors duration-100 border-l-[3px]
             ${completed ? 'opacity-60' : ''}
-            ${snapshot.isDragging ? 'opacity-90 rotate-3 shadow-2xl ring-2 ring-[#579dff] z-50' : 'ring-0'}
+            ${snapshot.isDragging ? 'opacity-90 rotate-3 shadow-2xl ring-2 ring-[var(--primary)] z-50' : 'ring-0'}
           `}
           style={{ ...provided.draggableProps.style, borderLeftColor: firstLabelColor ?? 'transparent' }}
         >
@@ -76,7 +76,7 @@ export function CardItem({ card, index, onClick }: { card: Card, index: number, 
             </div>
           )}
 
-          <div className={`text-[14px] text-[#B6C2CF] font-normal leading-[20px] break-words mb-1 pr-6 ${completed ? 'line-through text-[#9fadbc]' : ''}`}>
+          <div className={`text-[14px] text-[var(--text)] font-normal leading-[20px] break-words mb-1 pr-6 ${completed ? 'line-through text-[var(--text-muted)]' : ''}`}>
             {title}
           </div>
 

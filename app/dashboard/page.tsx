@@ -10,7 +10,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabase";
 
-const BOARD_COLORS = ['#0079BF', '#D29034', '#519839', '#B04632', '#89609E', '#CD5A91'];
+const BOARD_COLORS = ['#1f6f66', '#2d4a5a', '#3d3560', '#4a3728', '#1a3a2a', '#607687'];
 
 export default function DashboardPage() {
   const { boards, loading, refresh } = useBoards();
@@ -126,10 +126,10 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="flex-1 bg-[#1d2125] p-6 overflow-y-auto w-full custom-scrollbar text-[#B6C2CF]">
+    <div className="flex-1 bg-[var(--bg)] p-6 overflow-y-auto w-full custom-scrollbar text-[var(--text)]">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#579dff] to-[#0052CC] flex items-center justify-center shadow-lg font-bold text-white text-lg">T</div>
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-lg font-bold text-white text-lg">C</div>
           <div>
             <h1 className="text-xl font-bold text-white">CopyFlow Workspace</h1>
             <p className="text-xs text-[#9fadbc]">Your team&apos;s boards</p>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 10 }}
               onClick={e => e.stopPropagation()}
-              className="bg-[#282E33] rounded-xl p-5 w-full max-w-[340px] shadow-2xl border border-[#A6C5E2]/10"
+              className="bg-[var(--bg-elevated)] rounded-xl p-5 w-full max-w-[340px] shadow-2xl border border-[var(--border)]"
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold text-[#B6C2CF]">Create board</h2>
@@ -184,7 +184,7 @@ export default function DashboardPage() {
                 <input
                   type="text" value={newBoardName}
                   onChange={e => setNewBoardName(e.target.value)}
-                  className="w-full bg-[#22272B] text-white border-2 border-[#579dff] text-sm rounded-lg px-3 py-2 focus:outline-none mb-4"
+                  className="input-base mb-4"
                   required autoFocus
                 />
 
@@ -195,7 +195,7 @@ export default function DashboardPage() {
                     <button
                       key={v} type="button"
                       onClick={() => setNewBoardVisibility(v)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold transition-colors ${newBoardVisibility === v ? 'bg-[#579dff] text-[#1d2125]' : 'bg-[#22272B] text-[#9fadbc] hover:text-white'}`}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold transition-colors ${newBoardVisibility === v ? 'bg-[var(--primary)] text-white' : 'bg-[var(--bg-muted)] text-[var(--text-muted)] hover:text-[var(--text)]'}`}
                     >
                       {v === 'team' ? <><Users size={12}/> Team</> : <><Lock size={12}/> Only me</>}
                     </button>
@@ -215,7 +215,7 @@ export default function DashboardPage() {
                 </div>
 
                 <button type="submit" disabled={creating}
-                  className="w-full py-2.5 rounded-lg bg-[#579dff] text-[#1d2125] font-bold text-sm hover:bg-[#85b8ff] transition-colors flex items-center justify-center shadow"
+                  className="btn btn-primary w-full py-2.5 flex items-center justify-center"
                 >
                   {creating ? <LoadingSpinner size="sm" color="border-[#1d2125]" /> : 'Create board'}
                 </button>

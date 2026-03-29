@@ -36,7 +36,7 @@ export function BoardViews({ currentView, onViewChange }: { currentView: ViewTyp
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -5 }}
               transition={{ duration: 0.1 }}
-              className="absolute top-10 right-0 w-[240px] bg-[#282E33] border border-[#A6C5E2]/[0.16] rounded-xl shadow-2xl z-50 py-1 overflow-hidden"
+              className="absolute top-10 right-0 w-[240px] bg-[var(--bg-elevated)] border border-[var(--border)] rounded-xl shadow-2xl z-50 py-1 overflow-hidden"
             >
               <p className="text-[11px] font-bold text-[#9fadbc] uppercase tracking-wider px-3 pt-2 pb-1">Views</p>
               {VIEWS.map(view => {
@@ -46,14 +46,14 @@ export function BoardViews({ currentView, onViewChange }: { currentView: ViewTyp
                   <button
                     key={view.id}
                     onClick={() => { onViewChange(view.id as ViewType); setIsOpen(false); }}
-                    className={`w-full px-3 py-2.5 text-left hover:bg-[#A6C5E2]/[0.1] transition-colors flex items-center gap-3 ${isActive ? 'bg-[#579dff]/10' : ''}`}
+                    className={`w-full px-3 py-2.5 text-left hover:bg-[var(--bg-muted)] transition-colors flex items-center gap-3 ${isActive ? 'bg-[var(--primary)]/10' : ''}`}
                   >
-                    <Icon size={16} className={isActive ? 'text-[#579dff]' : 'text-[#9fadbc]'} />
+                    <Icon size={16} className={isActive ? 'text-[var(--primary)]' : 'text-[var(--text-muted)]'} />
                     <div className="flex-1">
-                      <div className={`text-sm font-medium ${isActive ? 'text-[#579dff]' : 'text-[#B6C2CF]'}`}>{view.name}</div>
-                      <div className="text-xs text-[#9fadbc]">{view.description}</div>
+                      <div className={`text-sm font-medium ${isActive ? 'text-[var(--primary)]' : 'text-[var(--text)]'}`}>{view.name}</div>
+                      <div className="text-xs text-[var(--text-muted)]">{view.description}</div>
                     </div>
-                    {isActive && <div className="w-1.5 h-1.5 bg-[#579dff] rounded-full" />}
+                    {isActive && <div className="w-1.5 h-1.5 bg-[var(--primary)] rounded-full" />}
                   </button>
                 );
               })}
