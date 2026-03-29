@@ -37,7 +37,6 @@ export type Card = {
   checklist: ChecklistItem[];
   assignee: string;
   position: number;
-  completed: boolean;
   created_at: string;
 };
 

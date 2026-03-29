@@ -63,7 +63,12 @@ export function EisenhowerView({
   const handleToggleComplete = async (e: React.MouseEvent, card: Card) => {
     e.stopPropagation();
     try {
-      await db.updateCard(card.id, { completed: !card.completed });
+      const currentLabels = card.labels ?? [];
+      const isCompleted = currentLabels.includes('done');
+      const newLabels = isCompleted
+        ? currentLabels.filter(l => l !== 'done')
+        : [...currentLabels, 'done'];
+      await db.updateCard(card.id, { labels: newLabels });
       onRefresh();
     } catch (err) {
       toast((err as Error).message, "error");
@@ -111,32 +116,32 @@ export function EisenhowerView({
                     onClick={() => onOpenCard(card.id)}
                     className={`group relative bg-[var(--bg-muted)] hover:bg-[var(--bg-elevated)] border border-[var(--border)] hover:border-[var(--primary)]/40
                       rounded-lg px-3 py-2.5 cursor-pointer transition-all
-                      ${card.completed ? 'opacity-50' : ''}`}
+                      ${(card.labels ?? []).includes('done') ? 'opacity-50' : ''}`}
                   >
                     {/* Tick button */}
                     <button
                       onClick={(e) => handleToggleComplete(e, card)}
-                      title={card.completed ? "Mark incomplete" : "Mark complete"}
+                      title={(card.labels ?? []).includes('done') ? "Mark incomplete" : "Mark complete"}
                       className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center
                         opacity-0 group-hover:opacity-100 transition-all
-                        ${card.completed
-                          ? 'bg-[#1F845A] border-[#1F845A] text-white'
-                          : 'border-[#7D8590] hover:border-[#1F845A] hover:bg-[#1F845A]/20 text-transparent hover:text-[#1F845A]'
+                        ${(card.labels ?? []).includes('done')
+                          ? 'bg-[#1F845A] border-[#1F845A] text-white opacity-100'
+                          : 'border-[var(--text-muted)] hover:border-[#1F845A] hover:bg-[#1F845A]/20 text-transparent hover:text-[#1F845A]'
                         }`}
                     >
                       <Check size={11} strokeWidth={3} />
                     </button>
 
-                    <p className={`text-sm text-[#E6EDF3] font-medium leading-snug pr-6 ${card.completed ? 'line-through text-[#7D8590]' : ''}`}>
+                    <p className={`text-sm text-[var(--text)] font-medium leading-snug pr-6 ${(card.labels ?? []).includes('done') ? 'line-through text-[var(--text-muted)]' : ''}`}>
                       {card.title}
                     </p>
 
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                      <span className="text-[11px] text-[#7D8590] bg-[#161B22] px-1.5 py-0.5 rounded">
+                      <span className="text-[11px] text-[var(--text-muted)] bg-[var(--bg-elevated)] px-1.5 py-0.5 rounded border border-[var(--border)]">
                         {getListName(card.list_id)}
                       </span>
                       {card.due_date && (
-                        <span className="text-[11px] text-[#7D8590] flex items-center gap-1">
+                        <span className="text-[11px] text-[var(--text-muted)] flex items-center gap-1">
                           <Clock size={10} />
                           {new Date(card.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         </span>
@@ -155,9 +160,8 @@ export function EisenhowerView({
         })}
       </div>
 
-      {/* Legend */}
-      <div className="mt-3 flex items-center justify-center gap-6 text-xs text-[#7D8590]">
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EB5A46] inline-block"/>Add labels <code className="bg-[#21262D] px-1 rounded text-[#E6EDF3]">urgent</code> + <code className="bg-[#21262D] px-1 rounded text-[#E6EDF3]">important</code> in the card editor</span>
+      <div className="mt-3 flex items-center justify-center gap-6 text-xs text-[var(--text-muted)]">
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EB5A46] inline-block"/>Open a card → Labels → add <code className="bg-[var(--bg-muted)] px-1 rounded text-[var(--text)]">urgent</code> or <code className="bg-[var(--bg-muted)] px-1 rounded text-[var(--text)]">important</code> to classify it</span>
       </div>
     </div>
   );

@@ -352,7 +352,7 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
                 className={`px-2 py-0.5 flex-1 overflow-y-auto overflow-x-hidden min-h-[10px] custom-scrollbar transition-colors duration-200 ${snapshot.isDraggingOver ? 'bg-black/5 dark:bg-white/5' : ''}`}
               >
                 {cards.map((card, index) => (
-                  <CardItem key={card.id} card={card} index={index} onClick={() => onOpenCard(card.id)} />
+                  <CardItem key={card.id} card={card} index={index} onClick={() => onOpenCard(card.id)} onRefresh={onRefresh} />
                 ))}
                 {provided.placeholder}
               </div>
