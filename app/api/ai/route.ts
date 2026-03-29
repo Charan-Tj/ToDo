@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const modelUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+    const modelUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
 
     let prompt = "";
 
@@ -56,6 +56,7 @@ ${JSON.stringify(payload.tasks)}`;
           }
         ],
         generationConfig: {
+          responseMimeType: "application/json",
           temperature: 0.1,
         }
       }),
