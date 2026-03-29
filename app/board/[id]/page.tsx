@@ -23,8 +23,19 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   const [isAddingList, setIsAddingList] = useState(false);
   const [newListTitle, setNewListTitle] = useState("");
   const [currentView, setCurrentView] = useState<ViewType>("board");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editNameValue, setEditNameValue] = useState("");
   const toast = useToast();
   const router = useRouter();
+
+  const handleBoardNameSave = async () => {
+    setIsEditingName(false);
+    if (!editNameValue.trim() || !data || editNameValue.trim() === data.board.name) return;
+    try {
+      await db.updateBoardName(data.board.id, editNameValue.trim());
+      refresh();
+    } catch(e) { toast((e as Error).message, 'error'); }
+  };
 
   useRealtime(params.id, () => {
     refresh();
@@ -120,17 +131,28 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
       <div className="h-14 px-4 flex items-center justify-between glass-navbar shrink-0 relative z-30 w-full">
         <div className="flex items-center gap-2">
-          <h1
-            className="text-[18px] font-semibold text-white cursor-pointer hover:bg-white/20 rounded-[10px] px-3 py-2 transition-colors"
-            onClick={async () => {
-               const newName = prompt("Board name:", data.board.name);
-               if (newName?.trim() && newName.trim() !== data.board.name) {
-                 try { await db.updateBoardName(data.board.id, newName.trim()); refresh(); } catch(e) { toast((e as Error).message, 'error')}
-               }
-            }}
-          >
-            {data.board.name}
-          </h1>
+          {isEditingName ? (
+            <input
+              autoFocus
+              value={editNameValue}
+              onChange={e => setEditNameValue(e.target.value)}
+              onBlur={handleBoardNameSave}
+              onKeyDown={e => {
+                if (e.key === 'Enter') e.currentTarget.blur();
+                if (e.key === 'Escape') { setIsEditingName(false); }
+              }}
+              className="text-[18px] font-semibold text-white bg-white/15 border border-white/30 rounded-[10px] px-3 py-1.5 outline-none focus:bg-white/20 focus:border-white/50 transition-all min-w-[120px]"
+              style={{ width: `${Math.max(editNameValue.length, 6)}ch` }}
+            />
+          ) : (
+            <h1
+              className="text-[18px] font-semibold text-white cursor-pointer hover:bg-white/20 rounded-[10px] px-3 py-2 transition-colors"
+              onClick={() => { setEditNameValue(data.board.name); setIsEditingName(true); }}
+              title="Click to rename"
+            >
+              {data.board.name}
+            </h1>
+          )}
           <button className="p-2 text-white hover:bg-white/20 rounded-[10px] transition-colors" title="Star this board">
             <Star size={16} />
           </button>
