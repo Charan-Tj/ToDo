@@ -32,7 +32,7 @@ export function Navbar() {
   const initial = email ? email.substring(0, 1).toUpperCase() : '?';
 
   return (
-    <nav className="h-14 w-full app-surface border-x-0 border-t-0 rounded-none text-[var(--text-muted)] flex items-center justify-between px-4 shrink-0 text-sm font-medium z-50">
+    <nav className="h-14 w-full glass-navbar border-x-0 border-t-0 rounded-none text-[var(--text-muted)] flex items-center justify-between px-4 shrink-0 text-sm font-medium z-50">
       <div className="flex items-center gap-2 h-full">
         <div
           className="flex items-center gap-2 cursor-pointer hover:bg-[var(--bg-muted)] px-3 py-2 rounded-[10px] transition-colors"

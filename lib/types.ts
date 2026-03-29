@@ -7,6 +7,7 @@ export type Board = {
   id: string;
   name: string;
   bg_color: string;
+  visibility: 'team' | 'personal';
   created_by: string;
   created_at: string;
 };
@@ -36,6 +37,7 @@ export type Card = {
   checklist: ChecklistItem[];
   assignee: string;
   position: number;
+  completed: boolean;
   created_at: string;
 };
 

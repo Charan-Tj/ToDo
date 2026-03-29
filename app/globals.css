@@ -111,8 +111,8 @@
     padding: 0;
     overflow: hidden;
     background:
-      radial-gradient(circle at 0% 0%, rgba(31, 111, 102, 0.14), transparent 36%),
-      radial-gradient(circle at 100% 0%, rgba(98, 114, 126, 0.08), transparent 32%),
+      radial-gradient(circle at 0% 0%, rgba(31, 111, 102, 0.20), transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(31, 111, 102, 0.08), transparent 35%),
       var(--bg);
     color: var(--text);
     @apply bg-background text-foreground;
@@ -128,7 +128,9 @@
 
 @layer components {
   .app-surface {
-    background-color: var(--bg-elevated);
+    background: color-mix(in srgb, var(--bg-elevated) 80%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
@@ -200,6 +202,20 @@
 }
 
 @layer utilities {
+  .glass-surface {
+    background: color-mix(in srgb, var(--bg-elevated) 60%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-navbar {
+    background: rgba(18, 26, 31, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   .app-grid-bg {
     background-image:
       linear-gradient(to right, color-mix(in srgb, var(--border) 70%, transparent) 1px, transparent 1px),

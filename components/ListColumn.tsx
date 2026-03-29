@@ -7,7 +7,7 @@ import { List, Card } from "@/lib/types";
 import { CardItem } from "./CardItem";
 import { db } from "@/lib/db";
 import { useToast } from "./Toast";
-import { Plus, MoreHorizontal, X, Trash2, Minus, Copy, Move, Eye, Palette, Zap, Calendar, Clock, Archive } from "lucide-react";
+import { Plus, MoreHorizontal, X, Trash2, Minus, Copy, Move, Eye, Palette, Zap, Calendar, Clock, Archive, ChevronRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 const LIST_COLORS = [
@@ -136,6 +136,35 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
     setShowMenu((prev) => !prev);
   };
 
+  if (isCollapsed) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.15 }}
+        className="w-14 shrink-0 rounded-[14px] app-surface overflow-visible transition-colors flex flex-col items-center py-2 gap-2"
+        style={{ borderTop: `2px solid ${listColor}40` }}
+      >
+        <button
+          onClick={() => setIsCollapsed(false)}
+          className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--bg-muted)] rounded transition-colors"
+          title="Expand list"
+        >
+          <ChevronRight size={16} className="rotate-180" />
+        </button>
+
+        <div className="text-xs font-semibold text-[var(--text)] [writing-mode:vertical-rl] rotate-180 max-h-[160px] tracking-wide leading-tight">
+          {list.title}
+        </div>
+
+        <div className="text-[10px] text-[var(--text)] font-semibold rounded bg-[var(--bg-muted)] px-1.5 py-0.5 border border-[var(--border)]">
+          {cards.length}
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -143,11 +172,11 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.15 }}
       className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal app-surface overflow-visible transition-colors"
-      style={{ borderTop: `3px solid ${listColor}` }}
+      style={{ borderTop: `2px solid ${listColor}40` }}
     >
-      <div className="pl-3 pr-2 pt-2 pb-1 flex items-center justify-between group relative" {...(listDragHandleProps || {})}>
+      <div className="flex items-center justify-between px-2 pb-2 mb-1 border-b border-[var(--border)] group relative" {...(listDragHandleProps || {})}>
         <input
-          className="flex-1 font-semibold text-[#172b4d] dark:text-[#B6C2CF] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-white dark:focus:bg-[#22272B] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
+          className="flex-1 font-semibold text-[var(--text)] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-[var(--bg-elevated)] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
           defaultValue={list.title}
           onBlur={e => handleUpdateTitle(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
@@ -232,12 +261,19 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
                         <button
                           key={color.name}
                           onClick={() => handleChangeColor(color.value)}
-                          className="w-full h-8 rounded-md hover:scale-105 transition-transform shadow-sm border border-black/10"
+                          className="w-full h-8 rounded-md hover:scale-105 transition-transform shadow-sm border border-black/10 relative overflow-hidden"
                           style={{ backgroundColor: color.value }}
                           title={color.name}
                         >
                           {listColor === color.value && (
-                            <div className="text-white text-sm font-bold">✓</div>
+                            <motion.div
+                              initial={{ scale: 0.7, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ duration: 0.18 }}
+                              className="absolute top-1 right-1 w-4 h-4 rounded-full bg-black/55 text-white text-[10px] font-bold flex items-center justify-center"
+                            >
+                              ✓
+                            </motion.div>
                           )}
                         </button>
                       ))}
@@ -357,11 +393,6 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
         </>
       )}
 
-      {isCollapsed && (
-        <div className="px-3 pb-2 text-[#44546f] dark:text-[#9fadbc] text-sm">
-          {cards.length} {cards.length === 1 ? 'card' : 'cards'}
-        </div>
-      )}
     </motion.div>
   );
 }

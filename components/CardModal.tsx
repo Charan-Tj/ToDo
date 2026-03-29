@@ -9,7 +9,14 @@ import { Card } from "@/lib/types";
 
 const LABEL_COLORS: Record<string, string> = {
   red: '#eb5a46', orange: '#ff9f1a', yellow: '#f2d600',
-  green: '#61bd4f', blue: '#3f7a73', purple: '#c377e0'
+  green: '#61bd4f', blue: '#0079bf', purple: '#c377e0',
+  urgent: '#ff9f1a', important: '#579dff',
+};
+
+const LABEL_NAMES: Record<string, string> = {
+  red: 'Red', orange: 'Orange', yellow: 'Yellow',
+  green: 'Green', blue: 'Blue', purple: 'Purple',
+  urgent: '🔴 Urgent', important: '🔵 Important',
 };
 
 export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: string, onClose: () => void, onRefresh: () => void }) {
@@ -35,14 +42,15 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
   };
 
   const toggleCheck = (idx: number, done: boolean) => {
-    const clone = [...(card.checklist||[])];
+    const clone = Array.isArray(card.checklist) ? [...card.checklist] : [];
+    if (!clone[idx]) return;
     clone[idx].done = done;
     updateField('checklist', clone);
   };
 
   const addCheckItem = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter' && chkInput.trim()) {
-      const clone = [...(card.checklist||[]), { text: chkInput.trim(), done: false }];
+      const clone = [...(Array.isArray(card.checklist) ? card.checklist : []), { text: chkInput.trim(), done: false }];
       updateField('checklist', clone);
       setChkInput("");
     }
@@ -124,17 +132,18 @@ export function CardModal({ card, onClose, onRefresh }: { card: Card, boardId?: 
             <div className="flex flex-col gap-4">
               <div>
                 <h3 className="text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] mb-2 uppercase tracking-wide">Labels</h3>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="flex flex-col gap-1.5">
                   {Object.entries(LABEL_COLORS).map(([name, color]) => {
                     const has = card.labels?.includes(name);
                     return (
                       <button
                         key={name}
                         onClick={() => handleLabelToggle(name)}
-                        className="h-8 rounded-md flex items-center justify-center transition-all hover:scale-105 shadow-sm"
-                        style={{ backgroundColor: color, opacity: has ? 1 : 0.4 }}
+                        className={`h-8 rounded-md flex items-center justify-between px-2 transition-all shadow-sm text-white text-xs font-semibold`}
+                        style={{ backgroundColor: color, opacity: has ? 1 : 0.35 }}
                       >
-                        {has && <Check size={14} className="text-white drop-shadow" />}
+                        <span>{LABEL_NAMES[name]}</span>
+                        {has && <Check size={12} className="text-white drop-shadow" />}
                       </button>
                     );
                   })}

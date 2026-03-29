@@ -14,8 +14,8 @@ export function useBoards() {
       const data = await db.getBoards();
       setBoards(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

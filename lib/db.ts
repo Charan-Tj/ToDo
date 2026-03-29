@@ -19,8 +19,8 @@ export const db = {
     return data as Board[];
   },
 
-  async createBoard(name: string, bg_color: string, user_id: string) {
-    const { data, error } = await supabase.from('boards').insert([{ name, bg_color, created_by: user_id }]).select();
+  async createBoard(name: string, bg_color: string, user_id: string, visibility: 'team' | 'personal' = 'team') {
+    const { data, error } = await supabase.from('boards').insert([{ name, bg_color, created_by: user_id, visibility }]).select();
     if (error) throw error;
     return data[0] as Board;
   },
@@ -34,14 +34,14 @@ export const db = {
     const [boardRes, listsRes, cardsRes] = await Promise.all([
       supabase.from('boards').select('*').eq('id', boardId).single(),
       supabase.from('lists').select('*').eq('board_id', boardId).order('position', { ascending: true }),
-      supabase.from('cards').select('*, lists!inner(board_id)').eq('lists.board_id', boardId)
+      supabase.from('cards').select('*').in('list_id', (await supabase.from('lists').select('id').eq('board_id', boardId)).data?.map((l) => l.id) || [])
     ]);
-    if (boardRes.error) throw boardRes.error;
+    if (boardRes.error && boardRes.error.code !== 'PGRST116') throw boardRes.error;
     if (listsRes.error) throw listsRes.error;
     if (cardsRes.error) throw cardsRes.error;
 
     return {
-      board: boardRes.data as Board,
+      board: (boardRes.data || { id: boardId, name: "Unknown board", bg_color: "", created_by: "", created_at: new Date().toISOString() }) as Board,
       lists: listsRes.data as List[],
       cards: cardsRes.data as Card[],
     };

@@ -11,6 +11,7 @@ import { CardModal } from "@/components/CardModal";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { BoardViews, ViewType } from "@/components/BoardViews";
 import { TableView } from "@/components/TableView";
+import { EisenhowerView } from "@/components/EisenhowerView";
 import { Plus, Star, X } from "lucide-react";
 import { useToast } from "@/components/Toast";
 import { Card } from "@/lib/types";
@@ -117,7 +118,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     <div className="flex-1 flex flex-col h-full overflow-hidden w-full relative app-grid-bg">
       <div className="absolute inset-0 bg-gradient-to-b from-black/18 via-black/8 to-black/12" />
 
-      <div className="h-14 px-4 flex items-center justify-between bg-black/22 backdrop-blur-md shrink-0 relative z-10 w-full border-b border-white/25">
+      <div className="h-14 px-4 flex items-center justify-between glass-navbar shrink-0 relative z-10 w-full">
         <div className="flex items-center gap-2">
           <h1
             className="text-[18px] font-semibold text-white cursor-pointer hover:bg-white/20 rounded-[10px] px-3 py-2 transition-colors"
@@ -211,7 +212,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
                ) : (
                  <button
                    onClick={() => setIsAddingList(true)}
-                   className="w-[272px] shrink-0 bg-white/18 hover:bg-white/26 text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-md border border-white/55"
+                   className="w-[272px] shrink-0 bg-white/8 hover:bg-white/15 text-white/70 hover:text-white font-semibold text-sm rounded-[14px] px-3 py-3 flex items-center gap-2 transition-all text-left backdrop-blur-sm border border-white/12 hover:border-white/22"
                  >
                    <Plus size={18} />
                    Add another list
@@ -226,18 +227,14 @@ export default function BoardPage({ params }: { params: { id: string } }) {
           lists={data.lists}
           onOpenCard={(id) => setSelectedCardId(id)}
         />
-      ) : (
-        <div className="flex-1 flex items-center justify-center transition-colors">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-[var(--text)] mb-2">
-              {currentView.charAt(0).toUpperCase() + currentView.slice(1)} View
-            </h3>
-            <p className="text-[var(--text-muted)]">
-              This view is coming soon!
-            </p>
-          </div>
-        </div>
-      )}
+      ) : currentView === "matrix" ? (
+        <EisenhowerView
+          cards={data.cards}
+          lists={data.lists}
+          onOpenCard={(id) => setSelectedCardId(id)}
+          onRefresh={refresh}
+        />
+      ) : null}
 
       <AnimatePresence>
         {selectedCardId && (
