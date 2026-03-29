@@ -36,6 +36,8 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [listColor, setListColor] = useState(list.bg_color || DEFAULT_LIST_COLOR);
+  const [isCopying, setIsCopying] = useState(false);
+  const [copyTitle, setCopyTitle] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -87,17 +89,16 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
     } catch(e) { toast((e as Error).message, 'error'); }
   };
 
-  const handleCopyList = async () => {
+  const handleCopyList = async (title: string) => {
+    if (!title.trim()) return;
     try {
-      const newTitle = prompt("List name:", `${list.title} (copy)`);
-      if (!newTitle?.trim()) return;
-
-      // This would normally create a copy with all cards
-      const pos = 999999; // Position at end
-      await db.createList(list.board_id, newTitle.trim(), pos);
+      const pos = 999999;
+      await db.createList(list.board_id, title.trim(), pos);
       onRefresh();
       setShowMenu(false);
-      toast("List copied successfully", "success");
+      setIsCopying(false);
+      setCopyTitle("");
+      toast("List copied", "success");
     } catch(e) { toast((e as Error).message, 'error'); }
   };
 
@@ -220,13 +221,42 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
                   <span>Add card</span>
                 </button>
 
-                <button
-                  onClick={handleCopyList}
-                  className="w-full px-3 py-2 text-left text-sm text-[#172b4d] dark:text-[#B6C2CF] hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/[0.16] transition-colors flex items-center gap-3"
-                >
-                  <Copy size={16} />
-                  <span>Copy list</span>
-                </button>
+                <div>
+                  {isCopying ? (
+                    <div className="px-3 py-2">
+                      <p className="text-xs font-semibold text-[#44546f] dark:text-[#9fadbc] mb-1.5">Name for copy</p>
+                      <input
+                        autoFocus
+                        value={copyTitle}
+                        onChange={e => setCopyTitle(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') handleCopyList(copyTitle);
+                          if (e.key === 'Escape') { setIsCopying(false); setCopyTitle(""); }
+                        }}
+                        className="w-full text-sm px-2 py-1.5 rounded border border-[#091e4214] dark:border-[#A6C5E2]/20 bg-white dark:bg-[#22272B] text-[#172b4d] dark:text-[#B6C2CF] outline-none focus:border-[var(--primary)] mb-2"
+                        placeholder="List name..."
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCopyList(copyTitle)}
+                          className="flex-1 py-1.5 text-xs font-semibold bg-[var(--primary)] text-white rounded hover:bg-[var(--primary-hover)] transition-colors"
+                        >Create</button>
+                        <button
+                          onClick={() => { setIsCopying(false); setCopyTitle(""); }}
+                          className="px-2 py-1.5 text-xs text-[#44546f] dark:text-[#9fadbc] hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/10 rounded transition-colors"
+                        >Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => { setCopyTitle(`${list.title} (copy)`); setIsCopying(true); }}
+                      className="w-full px-3 py-2 text-left text-sm text-[#172b4d] dark:text-[#B6C2CF] hover:bg-[#091e4214] dark:hover:bg-[#A6C5E2]/[0.16] transition-colors flex items-center gap-3"
+                    >
+                      <Copy size={16} />
+                      <span>Copy list</span>
+                    </button>
+                  )}
+                </div>
 
                 <button
                   onClick={() => toast("Move list feature coming soon!", "info")}
