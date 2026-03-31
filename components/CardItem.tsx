@@ -57,9 +57,9 @@ export function CardItem({ card, index, onClick, onRefresh }: { card: Card, inde
             ring-inset hover:ring-1 hover:ring-[var(--primary)]/20
             transition-colors duration-100 border-l-[3px]
             ${completed ? 'opacity-60' : ''}
-            ${snapshot.isDragging ? 'opacity-90 rotate-3 shadow-2xl ring-2 ring-[var(--primary)] z-50' : 'ring-0'}
+            ${snapshot.isDragging ? 'opacity-100 rotate-3 shadow-2xl ring-2 ring-[var(--primary)] z-50' : 'ring-0'}
           `}
-          style={{ ...provided.draggableProps.style, borderLeftColor: firstLabelColor ?? 'transparent' }}
+          style={{ ...provided.draggableProps.style, borderLeftColor: firstLabelColor ?? 'transparent', ...(snapshot.isDragging && { backgroundColor: "var(--bg-elevated)" }) }}
         >
           {/* Hover tick button */}
           <motion.button

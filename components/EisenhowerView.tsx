@@ -278,7 +278,13 @@ export function EisenhowerView({
       const l = c.labels ?? [];
       return !l.includes('urgent') && !l.includes('important') && !l.includes('classified');
     })
-    .sort((a, b) => a.position - b.position);
+    .sort((a, b) => {
+      const aDone = (a.labels ?? []).includes('done');
+      const bDone = (b.labels ?? []).includes('done');
+      if (aDone && !bDone) return 1;
+      if (!aDone && bDone) return -1;
+      return a.position - b.position;
+    });
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -290,7 +296,13 @@ export function EisenhowerView({
             {QUADRANTS.map((q, qi) => {
               const qCards = localCards
                 .filter(c => q.match(c.labels ?? []))
-                .sort((a, b) => a.position - b.position);
+                .sort((a, b) => {
+                  const aDone = (a.labels ?? []).includes('done');
+                  const bDone = (b.labels ?? []).includes('done');
+                  if (aDone && !bDone) return 1;
+                  if (!aDone && bDone) return -1;
+                  return a.position - b.position;
+                });
               const isAddingHere = addingIn === q.id;
 
               return (

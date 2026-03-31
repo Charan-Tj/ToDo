@@ -172,7 +172,7 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.15 }}
-      className="w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal app-surface overflow-visible transition-colors"
+      className={`relative w-[272px] shrink-0 rounded-[14px] flex flex-col max-h-[100%] whitespace-normal app-surface overflow-visible transition-colors ${showMenu ? 'z-50' : 'z-10'}`}
       style={{ borderTop: `2px solid ${listColor}40` }}
     >
       <div className="flex items-center justify-between px-2 pb-2 mb-1 border-b border-[var(--border)] group relative" {...(listDragHandleProps || {})}>
