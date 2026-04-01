@@ -244,7 +244,6 @@ export function EisenhowerView({
   const onDragEnd = async (result: DropResult) => {
     const { source, destination, draggableId } = result;
     if (!destination) return;
-    if (destination.droppableId === source.droppableId) return;
 
     const card = localCards.find(c => c.id === draggableId);
     if (!card) return;
@@ -254,18 +253,56 @@ export function EisenhowerView({
 
     if (!isDroppedToInbox && !destQuadrant) return;
 
+    // Compute sorted destination cards to calculate new position
+    const baseSort = (a: Card, b: Card) => {
+      const aDone = (a.labels ?? []).includes('done');
+      const bDone = (b.labels ?? []).includes('done');
+      if (aDone && !bDone) return 1;
+      if (!aDone && bDone) return -1;
+      return a.position - b.position;
+    };
+
+    let destCards: Card[] = [];
+    if (isDroppedToInbox) {
+      destCards = localCards.filter(c => {
+         const l = c.labels ?? [];
+         return !l.includes('urgent') && !l.includes('important') && !l.includes('classified');
+      }).sort(baseSort);
+    } else {
+      destCards = localCards.filter(c => destQuadrant!.match(c.labels ?? [])).sort(baseSort);
+    }
+
+    const isSameQuadrant = source.droppableId === destination.droppableId;
+    if (isSameQuadrant && source.index === destination.index) return;
+    
+    const targetArray = isSameQuadrant ? destCards.filter(c => c.id !== draggableId) : destCards;
+    
+    let newPosition = card.position;
+    if (targetArray.length === 0) {
+      newPosition = 1000;
+    } else if (destination.index === 0) {
+      newPosition = targetArray[0].position - 1000;
+    } else if (destination.index >= targetArray.length) {
+      newPosition = targetArray[targetArray.length - 1].position + 1000;
+    } else {
+      const prev = targetArray[destination.index - 1].position;
+      const next = targetArray[destination.index].position;
+      newPosition = prev + (next - prev) / 2;
+    }
+
     const newLabels = isDroppedToInbox
       ? stripClassification(card.labels ?? [])
       : applyQuadrantLabels(card.labels ?? [], destQuadrant!);
 
     const previousCards = localCards;
     setLocalCards(prev =>
-      prev.map(c => c.id === draggableId ? { ...c, labels: newLabels } : c)
+      prev.map(c => c.id === draggableId ? { ...c, labels: newLabels, position: newPosition } : c)
     );
 
     try {
-      await db.updateCard(card.id, { labels: newLabels });
-      // No re-fetch — realtime handles cross-user sync
+      if (card.position !== newPosition || JSON.stringify(card.labels) !== JSON.stringify(newLabels)) {
+         await db.updateCard(card.id, { labels: newLabels, position: newPosition });
+      }
     } catch (err) {
       setLocalCards(previousCards); // rollback
       toast((err as Error).message, "error");
@@ -283,13 +320,6 @@ export function EisenhowerView({
       const bDone = (b.labels ?? []).includes('done');
       if (aDone && !bDone) return 1;
       if (!aDone && bDone) return -1;
-      
-      if (a.due_date && b.due_date) {
-        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
-      }
-      if (a.due_date && !b.due_date) return -1;
-      if (!a.due_date && b.due_date) return 1;
-
       return a.position - b.position;
     });
 
@@ -308,13 +338,6 @@ export function EisenhowerView({
                   const bDone = (b.labels ?? []).includes('done');
                   if (aDone && !bDone) return 1;
                   if (!aDone && bDone) return -1;
-                  
-                  if (a.due_date && b.due_date) {
-                    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
-                  }
-                  if (a.due_date && !b.due_date) return -1;
-                  if (!a.due_date && b.due_date) return 1;
-                  
                   return a.position - b.position;
                 });
               const isAddingHere = addingIn === q.id;
