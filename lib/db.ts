@@ -31,18 +31,34 @@ export const db = {
   },
 
   async getBoardData(boardId: string) {
-    const [boardRes, listsRes, cardsRes] = await Promise.all([
-      supabase.from('boards').select('*').eq('id', boardId).single(),
-      supabase.from('lists').select('*').eq('board_id', boardId).order('position', { ascending: true }),
-      supabase.from('cards').select('*').in('list_id', (await supabase.from('lists').select('id').eq('board_id', boardId)).data?.map((l) => l.id) || [])
-    ]);
+    const boardRes = await supabase.from('boards').select('*').eq('id', boardId).single();
     if (boardRes.error && boardRes.error.code !== 'PGRST116') throw boardRes.error;
+    const board = (boardRes.data || { id: boardId, name: "Unknown", bg_color: "", created_by: "", visibility: "team", created_at: new Date().toISOString() }) as Board;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const userEmail = session?.user?.email;
+
+    let listsQuery = supabase.from('lists').select('*');
+    if (board.visibility === 'personal' && userEmail) {
+      listsQuery = listsQuery.or(`board_id.eq.${boardId},assignee_email.eq.${userEmail}`);
+    } else {
+      listsQuery = listsQuery.eq('board_id', boardId);
+    }
+
+    const listsRes = await listsQuery;
     if (listsRes.error) throw listsRes.error;
+
+    const lists = (listsRes.data as List[])
+       .filter(l => !l.archived)
+       .sort((a,b) => a.position - b.position);
+
+    const listIds = lists.map(l => l.id);
+    const cardsRes = listIds.length > 0 ? await supabase.from('cards').select('*').in('list_id', listIds) : { data: [], error: null };
     if (cardsRes.error) throw cardsRes.error;
 
     return {
-      board: (boardRes.data || { id: boardId, name: "Unknown board", bg_color: "", created_by: "", created_at: new Date().toISOString() }) as Board,
-      lists: listsRes.data as List[],
+      board,
+      lists,
       cards: cardsRes.data as Card[],
     };
   },
@@ -52,10 +68,17 @@ export const db = {
     if (error) throw error;
   },
 
-  async createList(board_id: string, title: string, position: number) {
-    const { data, error } = await supabase.from('lists').insert([{ board_id, title, position }]).select();
+  async createList(board_id: string, title: string, position: number, assignee_email?: string) {
+    const payload: Partial<List> & { board_id: string, title: string, position: number } = { board_id, title, position };
+    if (assignee_email) payload.assignee_email = assignee_email;
+    const { data, error } = await supabase.from('lists').insert([payload]).select();
     if (error) throw error;
     return data[0] as List;
+  },
+
+  async updateListAssignee(id: string, assignee_email: string | null) {
+    const { error } = await supabase.from('lists').update({ assignee_email }).eq('id', id);
+    if (error) throw error;
   },
 
   async updateListPositions(listIdsInOrder: string[]) {

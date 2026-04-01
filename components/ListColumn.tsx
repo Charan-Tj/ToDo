@@ -176,13 +176,16 @@ export function ListColumn({ list, cards, onRefresh, onOpenCard, listDragHandleP
       style={{ borderTop: `2px solid ${listColor}40` }}
     >
       <div className="flex items-center justify-between px-2 pb-2 mb-1 border-b border-[var(--border)] group relative" {...(listDragHandleProps || {})}>
-        <input
-          className="flex-1 font-semibold text-[var(--text)] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-[var(--bg-elevated)] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
-          defaultValue={list.title}
-          onBlur={e => handleUpdateTitle(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
-        />
-        <div className="flex items-center gap-1 pl-1 relative">
+        <div className="flex-1 min-w-0">
+          <input
+            className="w-full font-semibold text-[var(--text)] text-[14px] bg-transparent outline-none cursor-pointer focus:cursor-text focus:bg-[var(--bg-elevated)] focus:shadow-[0_0_0_4px_var(--ring)] rounded-[10px] px-2 py-1 -ml-2 transition-all"
+            defaultValue={list.title}
+            onBlur={e => handleUpdateTitle(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
+          />
+          {list.assignee_email && <div className="text-[10px] text-[var(--text-muted)] truncate -mt-1 ml-0.5" title={list.assignee_email}>👤 {list.assignee_email}</div>}
+        </div>
+        <div className="flex items-center gap-1 pl-1 relative shrink-0">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-1.5 text-[#44546f] dark:text-[#9fadbc] hover:bg-[#091e4224] dark:hover:bg-[#A6C5E2]/[0.16] hover:text-[#172b4d] dark:hover:text-[#B6C2CF] rounded transition-colors"

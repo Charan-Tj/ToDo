@@ -18,6 +18,7 @@ export type List = {
   title: string;
   position: number;
   bg_color?: string;
+  assignee_email?: string;
   archived?: boolean;
   created_at: string;
 };

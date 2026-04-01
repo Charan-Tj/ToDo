@@ -22,6 +22,7 @@ export default function BoardPage({ params }: { params: { id: string } }) {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isAddingList, setIsAddingList] = useState(false);
   const [newListTitle, setNewListTitle] = useState("");
+  const [newListAssignee, setNewListAssignee] = useState("");
   const [currentView, setCurrentView] = useState<ViewType>("board");
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState("");
@@ -111,8 +112,9 @@ export default function BoardPage({ params }: { params: { id: string } }) {
     const orderedLists = [...data.lists].sort((a, b) => a.position - b.position);
     const pos = orderedLists.length > 0 ? orderedLists[orderedLists.length - 1].position + 1000 : 1000;
     try {
-      await db.createList(params.id, newListTitle.trim(), pos);
+      await db.createList(params.id, newListTitle.trim(), pos, newListAssignee.trim() || undefined);
       setNewListTitle("");
+      setNewListAssignee("");
       setIsAddingList(false);
       refresh();
     } catch(e) {
@@ -215,8 +217,15 @@ export default function BoardPage({ params }: { params: { id: string } }) {
                        value={newListTitle}
                        onChange={e => setNewListTitle(e.target.value)}
                        onKeyDown={e => { if (e.key === 'Escape') setIsAddingList(false); }}
-                       placeholder="Enter list title..."
+                       placeholder="List title..."
                        className="input-base mb-2"
+                     />
+                     <input
+                       value={newListAssignee}
+                       onChange={e => setNewListAssignee(e.target.value)}
+                       onKeyDown={e => { if (e.key === 'Escape') setIsAddingList(false); }}
+                       placeholder="Assignee email (optional)..."
+                       className="input-base mb-2 text-xs"
                      />
                      <div className="flex items-center gap-2">
                        <button type="submit" className="btn btn-primary text-sm px-3 py-2">Add list</button>
