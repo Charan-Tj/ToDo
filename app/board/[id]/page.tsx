@@ -80,9 +80,9 @@ export default function BoardPage({ params }: { params: { id: string } }) {
 
     let newPosition = 0;
     if (destCards.length === 1) newPosition = 1000;
-    else if (destination.index === 0) newPosition = destCards[1].position / 2;
+    else if (destination.index === 0) newPosition = Math.round(destCards[1].position / 2);
     else if (destination.index === destCards.length - 1) newPosition = destCards[destCards.length - 2].position + 1000;
-    else newPosition = (destCards[destination.index - 1].position + destCards[destination.index + 1].position) / 2;
+    else newPosition = Math.round((destCards[destination.index - 1].position + destCards[destination.index + 1].position) / 2);
 
     updateData((current) => {
       if (!current) return current;

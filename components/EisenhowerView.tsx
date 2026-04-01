@@ -287,7 +287,7 @@ export function EisenhowerView({
     } else {
       const prev = targetArray[destination.index - 1].position;
       const next = targetArray[destination.index].position;
-      newPosition = prev + (next - prev) / 2;
+      newPosition = Math.round(prev + (next - prev) / 2);
     }
 
     const newLabels = isDroppedToInbox
