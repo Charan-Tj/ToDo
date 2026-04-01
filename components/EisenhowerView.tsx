@@ -283,6 +283,13 @@ export function EisenhowerView({
       const bDone = (b.labels ?? []).includes('done');
       if (aDone && !bDone) return 1;
       if (!aDone && bDone) return -1;
+      
+      if (a.due_date && b.due_date) {
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+      }
+      if (a.due_date && !b.due_date) return -1;
+      if (!a.due_date && b.due_date) return 1;
+
       return a.position - b.position;
     });
 
@@ -301,6 +308,13 @@ export function EisenhowerView({
                   const bDone = (b.labels ?? []).includes('done');
                   if (aDone && !bDone) return 1;
                   if (!aDone && bDone) return -1;
+                  
+                  if (a.due_date && b.due_date) {
+                    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+                  }
+                  if (a.due_date && !b.due_date) return -1;
+                  if (!a.due_date && b.due_date) return 1;
+                  
                   return a.position - b.position;
                 });
               const isAddingHere = addingIn === q.id;
